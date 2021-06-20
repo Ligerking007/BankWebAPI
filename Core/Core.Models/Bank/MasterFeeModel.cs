@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 #nullable disable
 
-namespace Repository.Models.BankDB
+namespace Core.Models.Bank
 {
-    public partial class MasterFee
+    public partial class MasterFeeModel
     {
         public DateTime EffectiveDate { get; set; }
         public decimal FeePercent { get; set; }
@@ -14,6 +14,6 @@ namespace Repository.Models.BankDB
         public string ModifiedBy { get; set; }
         public DateTime? ModifiedTime { get; set; }
 
-        public virtual User CreatedByNavigation { get; set; }
+        //public virtual User CreatedByNavigation { get; set; }
     }
 }

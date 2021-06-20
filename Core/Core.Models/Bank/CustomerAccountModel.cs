@@ -3,14 +3,14 @@ using System.Collections.Generic;
 
 #nullable disable
 
-namespace Repository.Models.BankDB
+namespace Core.Models.Bank
 {
-    public partial class CustomerAccount
+    public partial class CustomerAccountModel
     {
-        public CustomerAccount()
-        {
-            Transactions = new HashSet<Transaction>();
-        }
+        //public CustomerAccount()
+        //{
+        //    Transactions = new HashSet<Transaction>();
+        //}
 
         public string AccountNo { get; set; }
         public string Ibanno { get; set; }
@@ -22,7 +22,7 @@ namespace Repository.Models.BankDB
         public DateTime? ModifiedDate { get; set; }
         public string ModifiedBy { get; set; }
 
-        public virtual User CreatedByNavigation { get; set; }
-        public virtual ICollection<Transaction> Transactions { get; set; }
+        //public virtual User CreatedByNavigation { get; set; }
+        //public virtual ICollection<Transaction> Transactions { get; set; }
     }
 }
