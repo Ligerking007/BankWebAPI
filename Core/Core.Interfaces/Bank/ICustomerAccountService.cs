@@ -18,7 +18,7 @@ namespace Core.Interfaces
         public BaseResponse TransferMoney(TransactionModel req);
 
         public string GenerateAccountNo();
-        public string GenerateIBANNo(string text);
+        public string GenerateIBANNo();
         public decimal GetFeePercent(string feeType,DateTime currentDate);
 
     }

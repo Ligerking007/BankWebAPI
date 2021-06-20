@@ -1,12 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using AutoMapper;
 using Core.Common;
 using Core.Interfaces;
 using Core.Models;
 using Core.Models.Bank;
+using HtmlAgilityPack;
 using Microsoft.Extensions.Logging;
 using Repository.Interfaces.BankDB;
 using Repository.Models.BankDB;
@@ -52,6 +54,7 @@ namespace Core.Services
                 else
                 {
                     req.AccountNo = GenerateAccountNo();
+                    req.Ibanno = GenerateIBANNo();
                     req.CreatedDate = DateTime.Now;
                     req.CreatedBy = req.CreatedBy ?? "System";
                     var modelDB = _IMapper.Map<CustomerAccount>(req);
@@ -253,8 +256,26 @@ namespace Core.Services
             var newStr = count.ToString().PadLeft(20, '0');
             return newStr;
         }
-        public string GenerateIBANNo(string text)
+        public string GenerateIBANNo()
         {
+            using (WebClient web1 = new WebClient())
+            {
+                string html = web1.DownloadString("http://randomiban.com/?country=Netherlands");
+
+                HtmlDocument doc = new HtmlDocument();
+                doc.LoadHtml(html);
+
+                //Selecting all the nodes with tagname `span` having "id=ctl00_ContentBody_CacheName".
+                var nodes = doc.DocumentNode.SelectNodes("//p")
+                    .Where(d => d.Attributes.Contains("id"))
+                    .Where(d => d.Attributes["id"].Value == "demo");
+
+                foreach (HtmlNode node in nodes)
+                {
+                    return node.InnerText;
+                }
+
+            }
             return "";
         }
 
