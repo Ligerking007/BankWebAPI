@@ -39,10 +39,9 @@ namespace Core.Services
             BaseResponse res = new BaseResponse() { IsSuccess = false };
             try
             {
-                    var modelUpdate = _ICustomerAccountRepository.AsQueryable().FirstOrDefault(f => f.AccountNo==req.AccountNo);
-                    if (modelUpdate != null)
-                    {
-                    modelUpdate.Idcard = req.Idcard;
+                var modelUpdate = _ICustomerAccountRepository.AsQueryable().FirstOrDefault(f => f.AccountNo == req.AccountNo);
+                if (modelUpdate != null)
+                {
                     modelUpdate.FullName = req.FullName;
                     modelUpdate.Balance = req.Balance;
                     modelUpdate.ModifiedBy = req.CreatedBy ?? "System";
@@ -58,7 +57,7 @@ namespace Core.Services
                     var modelDB = _IMapper.Map<CustomerAccount>(req);
                     _ICustomerAccountRepository.Add(modelDB, true);
                 }
-                
+
                 res.IsSuccess = true;
             }
             catch (Exception ex)
@@ -95,7 +94,7 @@ namespace Core.Services
                 var queryDB = _ICustomerAccountRepository.AsQueryable();
                 var queryMapping = _IMapper.Map<IEnumerable<CustomerAccountModel>>(queryDB);
                 res = queryMapping.ToList();
-            } 
+            }
             catch (Exception ex)
             {
                 _ILogger.Error(ex);
@@ -114,15 +113,15 @@ namespace Core.Services
                 if (modelUpdate != null)
                 {
 
-                    req.FeePercent = GetFeePercent(req.ActionType,DateTime.Now);
-                    req.FeeAmount = Math.Round(req.Amount * req.FeePercent, 2);
-                    req.NetAmount = Math.Round(req.Amount - req.FeeAmount, 2);
+                    req.FeePercent = GetFeePercent(req.ActionType, DateTime.Now);
+                    req.FeeAmount = CalculateFeeAmount(req.Amount, req.FeePercent);
+                    req.NetAmount = CalculateNetAmountDeposit(req.Amount, req.FeeAmount);
 
-                    modelUpdate.Balance = Math.Round(modelUpdate.Balance + req.NetAmount, 2);
+                    modelUpdate.Balance = CalculateBalanceDeposit(modelUpdate.Balance, req.NetAmount);
 
                     _ICustomerAccountRepository.Update(modelUpdate, true);
 
-                    
+
                     res = SaveTransaction(req);
                 }
             }
@@ -144,19 +143,19 @@ namespace Core.Services
                 if (modelUpdate != null)
                 {
 
-                    req.FeePercent = GetFeePercent(req.ActionType,DateTime.Now);
-                    req.FeeAmount = Math.Round(req.Amount * req.FeePercent, 2);
-                    req.NetAmount = Math.Round(req.Amount + req.FeeAmount, 2);
+                    req.FeePercent = GetFeePercent(req.ActionType, DateTime.Now);
+                    req.FeeAmount = CalculateFeeAmount(req.Amount, req.FeePercent);
+                    req.NetAmount = CalculateNetAmountWithdraw(req.Amount, req.FeeAmount);
 
-                    if (modelUpdate.Balance < req.NetAmount)
+                    if (modelUpdate.Balance < req.NetAmount)//Validation
                     {
                         res.IsSuccess = false;
                         res.Message = "Not enough balance for withdrawal!";
                         return res;
                     }
-                    modelUpdate.Balance = Math.Round(modelUpdate.Balance - req.NetAmount, 2);
+                    modelUpdate.Balance = CalculateBalanceWithdraw(modelUpdate.Balance, req.NetAmount);
                     _ICustomerAccountRepository.Update(modelUpdate, true);
-                    
+
                     res = SaveTransaction(req);
                 }
             }
@@ -177,20 +176,28 @@ namespace Core.Services
                 var modelUpdate = _ICustomerAccountRepository.AsQueryable().FirstOrDefault(f => f.AccountNo == req.AccountNo);
                 if (modelUpdate != null)
                 {
-
+                    #region Source AccountNo
                     req.FeePercent = GetFeePercent(req.ActionType, DateTime.Now);
-                    req.FeeAmount = Math.Round(req.Amount * req.FeePercent, 2);
-                    req.NetAmount = Math.Round(req.Amount + req.FeeAmount, 2);
+                    req.FeeAmount = CalculateFeeAmount(req.Amount, req.FeePercent);
+                    req.NetAmount = CalculateNetAmountWithdraw(req.Amount, req.FeeAmount);
 
-                    if (modelUpdate.Balance < req.NetAmount)
+                    if (modelUpdate.Balance < req.NetAmount)//Validation
                     {
                         res.IsSuccess = false;
                         res.Message = "Not enough balance for transfer!";
                         return res;
                     }
-                    modelUpdate.Balance = Math.Round(modelUpdate.Balance - req.NetAmount, 2);
+                    modelUpdate.Balance = CalculateBalanceWithdraw(modelUpdate.Balance, req.NetAmount);
                     _ICustomerAccountRepository.Update(modelUpdate, true);
-
+                    #endregion
+                    #region Destination AccountNo
+                    var modelDestination = _ICustomerAccountRepository.AsQueryable().FirstOrDefault(f => f.AccountNo == req.DestinationNo);
+                    if (modelDestination != null)
+                    {
+                        modelDestination.Balance = CalculateBalanceDeposit(modelDestination.Balance, req.Amount);//Destination - No Fee
+                        _ICustomerAccountRepository.Update(modelDestination, true);
+                    }
+                    #endregion
                     res = SaveTransaction(req);
                 }
             }
@@ -229,7 +236,7 @@ namespace Core.Services
             List<TransactionModel> res = new List<TransactionModel>();
             try
             {
-                var queryDB = _ITransactionRepository.AsQueryable().Where(x=>x.AccountNo == accountNo);
+                var queryDB = _ITransactionRepository.AsQueryable().Where(x => x.AccountNo == accountNo);
                 var queryMapping = _IMapper.Map<IEnumerable<TransactionModel>>(queryDB);
                 res = queryMapping.ToList();
             }
@@ -242,14 +249,16 @@ namespace Core.Services
         }
         public string GenerateAccountNo()
         {
-            return "";
+            var count = _ICustomerAccountRepository.AsQueryable().Count()+1;
+            var newStr = count.ToString().PadLeft(20, '0');
+            return newStr;
         }
         public string GenerateIBANNo(string text)
         {
             return "";
         }
-        
-        public decimal GetFeePercent(string feeType ,DateTime currentDate)
+
+        public decimal GetFeePercent(string feeType, DateTime currentDate)
         {
             var feePercent = _IMasterFeeRepository.AsQueryable().OrderByDescending(x => x.EffectiveDate)
                 .FirstOrDefault(f => f.EffectiveDate <= currentDate.Date && f.FeeType == feeType).FeePercent;
@@ -258,7 +267,30 @@ namespace Core.Services
         }
         private string GenerateReferenceNo()
         {
-            return "";
+            var count = _ITransactionRepository.AsQueryable().Count() + 1;
+            var newStr = count.ToString().PadLeft(30, '0');
+            return newStr;
         }
+        private decimal CalculateFeeAmount(decimal amount, decimal feePercent)
+        {
+            return Math.Round(amount * feePercent, 2);
+        }
+        private decimal CalculateNetAmountDeposit(decimal amount, decimal feeAmount)
+        {
+            return Math.Round(amount - feeAmount, 2);
+        }
+        private decimal CalculateNetAmountWithdraw(decimal amount, decimal feeAmount)
+        {
+            return Math.Round(amount + feeAmount, 2);
+        }
+        private decimal CalculateBalanceDeposit(decimal balance, decimal netAmount)
+        {
+            return Math.Round(balance + netAmount, 2);
+        }
+        private decimal CalculateBalanceWithdraw(decimal balance, decimal netAmount)
+        {
+            return Math.Round(balance - netAmount, 2);
+        }
+
     }
 }

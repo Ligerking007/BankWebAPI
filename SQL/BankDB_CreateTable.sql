@@ -28,7 +28,6 @@ CREATE TABLE [dbo].[CustomerAccount](
 	
 	[AccountNo] [nvarchar](34) NOT NULL,
 	[IBANNo] [nvarchar](34) NOT NULL,
-	[IDCard] [nvarchar](20) NOT NULL,
 	[FullName] [nvarchar](200) NOT NULL,
 	[Balance] [decimal](18, 2) NOT NULL,	
 	[IsActived] bit  NOT NULL DEFAULT 1,	
@@ -58,11 +57,6 @@ CREATE NONCLUSTERED INDEX [IX_CustomerAccount_AccountNo] ON [dbo].[CustomerAccou
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 GO
 
-CREATE NONCLUSTERED INDEX [IX_CustomerAccount_IDCard] ON [dbo].[CustomerAccount]
-(
-	[IDCard] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-GO
 
 
 CREATE TABLE [dbo].[MasterFee](

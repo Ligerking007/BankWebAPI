@@ -14,7 +14,6 @@ namespace Core.Models.Bank
 
         public string AccountNo { get; set; }
         public string Ibanno { get; set; }
-        public string Idcard { get; set; }
         public string FullName { get; set; }
         public decimal Balance { get; set; }
         public bool? IsActived { get; set; }

@@ -43,8 +43,6 @@ namespace Repository.Models.BankDB
 
                 entity.HasIndex(e => e.AccountNo, "IX_CustomerAccount_AccountNo");
 
-                entity.HasIndex(e => e.Idcard, "IX_CustomerAccount_IDCard");
-
                 entity.Property(e => e.AccountNo).HasMaxLength(34);
 
                 entity.Property(e => e.Balance).HasColumnType("decimal(18, 2)");
@@ -63,11 +61,6 @@ namespace Repository.Models.BankDB
                     .IsRequired()
                     .HasMaxLength(34)
                     .HasColumnName("IBANNo");
-
-                entity.Property(e => e.Idcard)
-                    .IsRequired()
-                    .HasMaxLength(20)
-                    .HasColumnName("IDCard");
 
                 entity.Property(e => e.IsActived)
                     .IsRequired()
