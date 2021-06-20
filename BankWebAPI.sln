@@ -3,7 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30611.23
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BankWebAPI", "BankWebAPI\BankWebAPI.csproj", "{184AA33F-ABC7-4C1C-9E47-F7242B23F40C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BankWebAPI", "BankWebAPI\BankWebAPI.csproj", "{184AA33F-ABC7-4C1C-9E47-F7242B23F40C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Repository", "Repository", "{851E7F94-B367-4D4D-AC15-2D71D51A9A97}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Repository.Models", "Repository\Repository.Models\Repository.Models.csproj", "{7BFE15D8-FF03-42EC-B36C-319675CA9B0E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{A4216CB9-0566-4A61-BC92-FD93A038F0E5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Common", "Core\Core.Common\Core.Common.csproj", "{A7B26350-70B4-45AE-8126-B1C65197D1B8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,9 +23,21 @@ Global
 		{184AA33F-ABC7-4C1C-9E47-F7242B23F40C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{184AA33F-ABC7-4C1C-9E47-F7242B23F40C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{184AA33F-ABC7-4C1C-9E47-F7242B23F40C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7BFE15D8-FF03-42EC-B36C-319675CA9B0E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7BFE15D8-FF03-42EC-B36C-319675CA9B0E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7BFE15D8-FF03-42EC-B36C-319675CA9B0E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7BFE15D8-FF03-42EC-B36C-319675CA9B0E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A7B26350-70B4-45AE-8126-B1C65197D1B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A7B26350-70B4-45AE-8126-B1C65197D1B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A7B26350-70B4-45AE-8126-B1C65197D1B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A7B26350-70B4-45AE-8126-B1C65197D1B8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{7BFE15D8-FF03-42EC-B36C-319675CA9B0E} = {851E7F94-B367-4D4D-AC15-2D71D51A9A97}
+		{A7B26350-70B4-45AE-8126-B1C65197D1B8} = {A4216CB9-0566-4A61-BC92-FD93A038F0E5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3B2331E9-F8DA-43CA-8BBB-1CEA1900BDA8}
