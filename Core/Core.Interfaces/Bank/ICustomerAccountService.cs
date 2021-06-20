@@ -19,7 +19,7 @@ namespace Core.Interfaces
 
         public string GenerateAccountNo();
         public string GenerateIBANNo(string text);
-        public decimal GetFeePercent(DateTime currentDate);
+        public decimal GetFeePercent(string feeType,DateTime currentDate);
 
     }
 }

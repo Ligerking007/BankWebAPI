@@ -10,7 +10,9 @@ namespace Repository.Models.MappingProfile
 		public DomainProfile()
 		{
 			CreateMap<CustomerAccount, CustomerAccountModel>();
-
+			CreateMap<CustomerAccountModel, CustomerAccount>();
+			CreateMap<Transaction, TransactionModel>();
+			CreateMap<TransactionModel, Transaction>();
 		}
 	}
 }

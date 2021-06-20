@@ -31,10 +31,12 @@ CREATE TABLE [dbo].[CustomerAccount](
 	[IDCard] [nvarchar](20) NOT NULL,
 	[FullName] [nvarchar](200) NOT NULL,
 	[Balance] [decimal](18, 2) NOT NULL,	
+	[IsActived] bit  NOT NULL DEFAULT 1,	
 	[CreatedDate] [datetime] NOT NULL,
 	[CreatedBy] [nvarchar](20) NOT NULL,
 	[ModifiedDate] [datetime]  NULL,
 	[ModifiedBy] [nvarchar](20)  NULL,
+
  CONSTRAINT [PK_CustomerAccount] PRIMARY KEY CLUSTERED 
 (
 	[AccountNo] ASC
@@ -65,6 +67,7 @@ GO
 
 CREATE TABLE [dbo].[MasterFee](
 	[EffectiveDate] [date] NOT NULL,
+	[FeeType] [nvarchar](1) NOT NULL, -- T = Transfer, D = Deposit, W = Withdraw
 	[FeePercent] [decimal](9, 2) NOT NULL,	
 	[CreatedBy] [nvarchar](20) NOT NULL,
 	[CreatedTime] [datetime] NOT NULL,

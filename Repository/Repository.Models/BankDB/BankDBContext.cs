@@ -69,6 +69,10 @@ namespace Repository.Models.BankDB
                     .HasMaxLength(20)
                     .HasColumnName("IDCard");
 
+                entity.Property(e => e.IsActived)
+                    .IsRequired()
+                    .HasDefaultValueSql("((1))");
+
                 entity.Property(e => e.ModifiedBy).HasMaxLength(20);
 
                 entity.Property(e => e.ModifiedDate).HasColumnType("datetime");
@@ -94,6 +98,10 @@ namespace Repository.Models.BankDB
                 entity.Property(e => e.CreatedTime).HasColumnType("datetime");
 
                 entity.Property(e => e.FeePercent).HasColumnType("decimal(9, 2)");
+
+                entity.Property(e => e.FeeType)
+                    .IsRequired()
+                    .HasMaxLength(1);
 
                 entity.Property(e => e.ModifiedBy).HasMaxLength(20);
 

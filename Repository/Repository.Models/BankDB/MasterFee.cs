@@ -8,6 +8,7 @@ namespace Repository.Models.BankDB
     public partial class MasterFee
     {
         public DateTime EffectiveDate { get; set; }
+        public string FeeType { get; set; }
         public decimal FeePercent { get; set; }
         public string CreatedBy { get; set; }
         public DateTime CreatedTime { get; set; }

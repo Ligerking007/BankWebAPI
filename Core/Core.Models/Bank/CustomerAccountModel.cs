@@ -17,6 +17,7 @@ namespace Core.Models.Bank
         public string Idcard { get; set; }
         public string FullName { get; set; }
         public decimal Balance { get; set; }
+        public bool? IsActived { get; set; }
         public DateTime CreatedDate { get; set; }
         public string CreatedBy { get; set; }
         public DateTime? ModifiedDate { get; set; }
