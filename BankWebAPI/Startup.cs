@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -12,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Repository.Models.BankDB;
+using Repository.Models.MappingProfile;
 
 namespace BankWebAPI
 {
@@ -30,6 +32,16 @@ namespace BankWebAPI
             services.AddDbContext<BankDBContext>(options =>
               options.UseSqlServer(
                   this.Configuration.GetConnectionString("DefaultConnection")));
+
+            // Auto Mapper Configurations
+            var mapperConfig = new MapperConfiguration(mc =>
+            {
+                mc.AddProfile(new DomainProfile());
+            });
+
+            IMapper mapper = mapperConfig.CreateMapper();
+            services.AddSingleton(mapper);
+            services.AddAutoMapper(typeof(Startup));
 
             services.AddControllers();
         }
