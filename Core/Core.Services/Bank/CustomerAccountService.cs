@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
-using System.Text;
+using System.Reflection;
 using AutoMapper;
 using Core.Common;
 using Core.Interfaces;
@@ -10,6 +11,7 @@ using Core.Models;
 using Core.Models.Bank;
 using HtmlAgilityPack;
 using Microsoft.Extensions.Logging;
+using OpenQA.Selenium.Chrome;
 using Repository.Interfaces.BankDB;
 using Repository.Models.BankDB;
 
@@ -252,20 +254,25 @@ namespace Core.Services
         }
         public string GenerateAccountNo()
         {
-            var count = _ICustomerAccountRepository.AsQueryable().Count()+1;
+            var count = _ICustomerAccountRepository.AsQueryable().Count() + 1;
             var newStr = count.ToString().PadLeft(20, '0');
             return newStr;
         }
         public string GenerateIBANNo()
         {
-            using (WebClient web1 = new WebClient())
+            try
             {
-                string html = web1.DownloadString("http://randomiban.com/?country=Netherlands");
+                var driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+                
+                //Navigate to DotNet website
+                driver.Navigate().GoToUrl("http://randomiban.com/?country=Netherlands");
+                string html = driver.PageSource;
 
                 HtmlDocument doc = new HtmlDocument();
+
                 doc.LoadHtml(html);
 
-                //Selecting all the nodes with tagname `span` having "id=ctl00_ContentBody_CacheName".
+                //get data in p Tag : <p id="demo" class="ibandisplay">NL28RABO3154172025</p>
                 var nodes = doc.DocumentNode.SelectNodes("//p")
                     .Where(d => d.Attributes.Contains("id"))
                     .Where(d => d.Attributes["id"].Value == "demo");
@@ -274,11 +281,13 @@ namespace Core.Services
                 {
                     return node.InnerText;
                 }
-
+            }
+            catch(Exception ex)
+            {
+                _ILogger.Error(ex);
             }
             return "";
         }
-
         public decimal GetFeePercent(string feeType, DateTime currentDate)
         {
             var feePercent = _IMasterFeeRepository.AsQueryable().OrderByDescending(x => x.EffectiveDate)

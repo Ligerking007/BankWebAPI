@@ -3,7 +3,6 @@ using Core.Services;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Ninject;
 using Ninject.MockingKernel.Moq;
-using System;
 using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 namespace UnitTest.Services
 {
@@ -12,15 +11,16 @@ namespace UnitTest.Services
     {
 
         private MoqMockingKernel _kernel;
-
+      
         [TestInitialize]
         public void Initialize()
         {
             _kernel = new MoqMockingKernel();
 
             _kernel.Bind<ICustomerAccountService>().To<CustomerAccountService>();
-        }
 
+        }
+        #region Calculate
         [TestMethod]
         public void CalculateFeeAmount_1000_Point1()
         {
@@ -60,7 +60,7 @@ namespace UnitTest.Services
             Initialize();
             var _ICustomerAccountService = _kernel.Get<ICustomerAccountService>();
             decimal amount = 500;
-            decimal feeAmount = 0.5m; //CalculateFeeAmount_1000_Point1();
+            decimal feeAmount = 0.5m; //CalculateFeeAmount_500_Point1();
             decimal newBalance = _ICustomerAccountService.CalculateNetAmountDeposit(amount, feeAmount);
             Assert.AreEqual(newBalance, 499.5m);
         }
@@ -105,5 +105,36 @@ namespace UnitTest.Services
             decimal newBalance = _ICustomerAccountService.CalculateBalanceDeposit(balance, netAmount);//1499 
             Assert.AreEqual(newBalance, 1499m);
         }
+        #endregion
+        #region Generate
+        [TestMethod]
+        public void GenerateIBANNo()
+        {
+            Initialize();
+            var _ICustomerAccountService = _kernel.Get<ICustomerAccountService>();
+            var str = _ICustomerAccountService.GenerateIBANNo();
+            bool checkNull = string.IsNullOrEmpty(str);
+            Assert.AreEqual(checkNull, false);
+        }
+        [TestMethod]
+        public void GenerateAccountNo_Length()
+        {
+            Initialize();
+            var _ICustomerAccountService = _kernel.Get<ICustomerAccountService>();
+            var str = _ICustomerAccountService.GenerateAccountNo();
+            var length = str.Length;
+            Assert.AreEqual(length, 20);
+        }
+
+        [TestMethod]
+        public void GenerateReferenceNo_Length()
+        {
+            Initialize();
+            var _ICustomerAccountService = _kernel.Get<ICustomerAccountService>();
+            var str = _ICustomerAccountService.GenerateReferenceNo();
+            var length = str.Length;
+            Assert.AreEqual(length, 30);
+        }
+        #endregion
     }
 }

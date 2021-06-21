@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.Interfaces\Core.Interfaces.csproj" />
+    <ProjectReference Include="..\Core\Core.Services\Core.Services.csproj" />
     <ProjectReference Include="..\Repository\Repository.Models\Repository.Models.csproj" />
   </ItemGroup>
 

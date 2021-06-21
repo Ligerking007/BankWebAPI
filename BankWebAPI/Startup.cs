@@ -14,6 +14,9 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Repository.Models.BankDB;
 using Repository.Models.MappingProfile;
+using Core.Interfaces;
+using Core.Services;
+using System.Reflection;
 
 namespace BankWebAPI
 {
@@ -29,6 +32,11 @@ namespace BankWebAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+            services.AddMemoryCache();
+            RepositoryDependencySolver.Init(services);
+            ServiceDependencySolver.Init(services);
+
             services.AddDbContext<BankDBContext>(options =>
               options.UseSqlServer(
                   this.Configuration.GetConnectionString("DefaultConnection")));
@@ -64,6 +72,41 @@ namespace BankWebAPI
             {
                 endpoints.MapControllers();
             });
+        }
+    }
+    public static class ServiceDependencySolver
+    {
+        public static void Init(IServiceCollection services)
+        {
+            var iservice = Assembly.GetAssembly(typeof(Core.Interfaces.ICustomerAccountService));
+            var service = Assembly.GetAssembly(typeof(Core.Services.CustomerAccountService));
+            foreach (Type mytype in iservice.GetTypes().Where(mytype => mytype.IsInterface))
+            {
+                foreach (Type myImple in service.GetTypes().Where(myImple => mytype.IsAssignableFrom(myImple)))
+                {
+                    services.AddScoped(mytype, myImple);
+                }
+            }
+            services.AddLogging();
+            //services.AddSingleton() ;
+        }
+    }
+    public static class RepositoryDependencySolver
+    {
+        public static void Init(IServiceCollection services)
+        {
+
+
+            // MCGasoline
+            var iservice = Assembly.GetAssembly(typeof(Repository.Interfaces.BankDB.ICustomerAccountRepository));
+            var service = Assembly.GetAssembly(typeof(Repository.Entities.BankDB.CustomerAccountRepository));
+            foreach (Type mytype in iservice.GetTypes().Where(mytype => mytype.IsInterface))
+            {
+                foreach (Type myImple in service.GetTypes().Where(myImple => mytype.IsAssignableFrom(myImple)))
+                {
+                    services.AddScoped(mytype, myImple);
+                }
+            }
         }
     }
 }

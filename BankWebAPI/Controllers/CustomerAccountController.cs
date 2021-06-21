@@ -20,11 +20,16 @@ namespace BankWebAPI.Controllers
         {
             this._ICustomerAccountService = _ICustomerAccountService;
         }
-        public IActionResult Create()
+        public IActionResult Index()
         {
             return View();
         }
-      
+
+
+        //public IActionResult Create()
+        //{
+        //    return View();
+        //}
 
         [HttpPost]
         public IActionResult Create(CustomerAccountModel model)

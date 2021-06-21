@@ -6,7 +6,7 @@ namespace BankWebAPI.Controllers
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
 
-    [Authorize]
+    //[Authorize]
     public abstract class BaseController : Controller
     {
         protected IActionResult RedirectToHome() => this.RedirectToAction("Index", "Home");
