@@ -286,29 +286,29 @@ namespace Core.Services
 
             return feePercent;
         }
-        private string GenerateReferenceNo()
+        public string GenerateReferenceNo()
         {
             var count = _ITransactionRepository.AsQueryable().Count() + 1;
             var newStr = count.ToString().PadLeft(30, '0');
             return newStr;
         }
-        private decimal CalculateFeeAmount(decimal amount, decimal feePercent)
+        public decimal CalculateFeeAmount(decimal amount, decimal feePercent)
         {
-            return Math.Round(amount * feePercent, 2);
+            return Math.Round(((amount * feePercent) / 100), 2);
         }
-        private decimal CalculateNetAmountDeposit(decimal amount, decimal feeAmount)
+        public decimal CalculateNetAmountDeposit(decimal amount, decimal feeAmount)
         {
             return Math.Round(amount - feeAmount, 2);
         }
-        private decimal CalculateNetAmountWithdraw(decimal amount, decimal feeAmount)
+        public decimal CalculateNetAmountWithdraw(decimal amount, decimal feeAmount)
         {
             return Math.Round(amount + feeAmount, 2);
         }
-        private decimal CalculateBalanceDeposit(decimal balance, decimal netAmount)
+        public decimal CalculateBalanceDeposit(decimal balance, decimal netAmount)
         {
             return Math.Round(balance + netAmount, 2);
         }
-        private decimal CalculateBalanceWithdraw(decimal balance, decimal netAmount)
+        public decimal CalculateBalanceWithdraw(decimal balance, decimal netAmount)
         {
             return Math.Round(balance - netAmount, 2);
         }

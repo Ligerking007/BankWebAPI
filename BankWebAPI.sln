@@ -7,21 +7,25 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BankWebAPI", "BankWebAPI\Ba
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Repository", "Repository", "{851E7F94-B367-4D4D-AC15-2D71D51A9A97}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Repository.Models", "Repository\Repository.Models\Repository.Models.csproj", "{7BFE15D8-FF03-42EC-B36C-319675CA9B0E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Repository.Models", "Repository\Repository.Models\Repository.Models.csproj", "{7BFE15D8-FF03-42EC-B36C-319675CA9B0E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{A4216CB9-0566-4A61-BC92-FD93A038F0E5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Common", "Core\Core.Common\Core.Common.csproj", "{A7B26350-70B4-45AE-8126-B1C65197D1B8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Common", "Core\Core.Common\Core.Common.csproj", "{A7B26350-70B4-45AE-8126-B1C65197D1B8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Repository.Interfaces", "Repository\Repository.Interfaces\Repository.Interfaces.csproj", "{1F35AD98-5005-4E23-A00C-86EFCB5955D7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Repository.Interfaces", "Repository\Repository.Interfaces\Repository.Interfaces.csproj", "{1F35AD98-5005-4E23-A00C-86EFCB5955D7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Repository.Entities", "Repository\Repository.Entities\Repository.Entities.csproj", "{0ED17E71-0996-451B-98A9-F4DB66E7C3D6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Repository.Entities", "Repository\Repository.Entities\Repository.Entities.csproj", "{0ED17E71-0996-451B-98A9-F4DB66E7C3D6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Services", "Core\Core.Services\Core.Services.csproj", "{7ACFF7BD-6994-4C7F-9142-939EEFB154F3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Services", "Core\Core.Services\Core.Services.csproj", "{7ACFF7BD-6994-4C7F-9142-939EEFB154F3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Interfaces", "Core\Core.Interfaces\Core.Interfaces.csproj", "{13684D00-2BC4-4508-BD75-52A43B12DA9E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Interfaces", "Core\Core.Interfaces\Core.Interfaces.csproj", "{13684D00-2BC4-4508-BD75-52A43B12DA9E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Models", "Core\Core.Models\Core.Models.csproj", "{2075DBC8-77F2-4289-9CC4-0DC8647FB5EB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Models", "Core\Core.Models\Core.Models.csproj", "{2075DBC8-77F2-4289-9CC4-0DC8647FB5EB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnitTest", "UnitTest", "{8136714E-A685-4EBB-961B-1074E64DAE62}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTest.Services", "UnitTest\UnitTest.Services\UnitTest.Services.csproj", "{56AE62CC-5FB6-4BB5-9CCE-68BC7E843519}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -61,6 +65,10 @@ Global
 		{2075DBC8-77F2-4289-9CC4-0DC8647FB5EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2075DBC8-77F2-4289-9CC4-0DC8647FB5EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2075DBC8-77F2-4289-9CC4-0DC8647FB5EB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{56AE62CC-5FB6-4BB5-9CCE-68BC7E843519}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{56AE62CC-5FB6-4BB5-9CCE-68BC7E843519}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{56AE62CC-5FB6-4BB5-9CCE-68BC7E843519}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{56AE62CC-5FB6-4BB5-9CCE-68BC7E843519}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -73,6 +81,7 @@ Global
 		{7ACFF7BD-6994-4C7F-9142-939EEFB154F3} = {A4216CB9-0566-4A61-BC92-FD93A038F0E5}
 		{13684D00-2BC4-4508-BD75-52A43B12DA9E} = {A4216CB9-0566-4A61-BC92-FD93A038F0E5}
 		{2075DBC8-77F2-4289-9CC4-0DC8647FB5EB} = {A4216CB9-0566-4A61-BC92-FD93A038F0E5}
+		{56AE62CC-5FB6-4BB5-9CCE-68BC7E843519} = {8136714E-A685-4EBB-961B-1074E64DAE62}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3B2331E9-F8DA-43CA-8BBB-1CEA1900BDA8}

@@ -21,5 +21,12 @@ namespace Core.Interfaces
         public string GenerateIBANNo();
         public decimal GetFeePercent(string feeType,DateTime currentDate);
 
+        public string GenerateReferenceNo();
+        public decimal CalculateFeeAmount(decimal amount, decimal feePercent);
+        public decimal CalculateNetAmountDeposit(decimal amount, decimal feeAmount);
+        public decimal CalculateNetAmountWithdraw(decimal amount, decimal feeAmount);
+        public decimal CalculateBalanceDeposit(decimal balance, decimal netAmount);
+        public decimal CalculateBalanceWithdraw(decimal balance, decimal netAmount);
+
     }
 }
