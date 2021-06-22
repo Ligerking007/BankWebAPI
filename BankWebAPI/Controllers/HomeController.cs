@@ -11,6 +11,7 @@ namespace BankWebAPI.Controllers
     [ApiController]
     public class HomeController : BaseController
     {
+        [ApiExplorerSettings(IgnoreApi = true)]
         public IActionResult Index()
         {
 

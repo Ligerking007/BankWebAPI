@@ -17,6 +17,12 @@ using Repository.Models.MappingProfile;
 using Core.Interfaces;
 using Core.Services;
 using System.Reflection;
+using Microsoft.OpenApi.Models;
+using System.IO;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace BankWebAPI
 {
@@ -52,6 +58,64 @@ namespace BankWebAPI
             services.AddAutoMapper(typeof(Startup));
 
             services.AddControllers();
+
+            services.AddSwaggerGen(swagger =>
+            {
+                services.AddSwaggerGen(c =>
+                {
+                    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Bank Web API", Version = "v1" });
+                    var basePath = AppContext.BaseDirectory;
+                    var xmlPath = Path.Combine(basePath, "BankWebApi.xml");
+                    c.IncludeXmlComments(xmlPath);
+                });
+
+                //swagger.SwaggerDoc("BankWebAPI", new OpenApiInfo { Title = "Bank Web API", Version = "v1" });
+                //swagger.AddSecurityDefinition("Bearer",
+                //      new OpenApiSecurityScheme
+                //      {
+                //          In = "header",
+                //          Name = "Authorization",
+                //          Type = "apiKey"
+                //      });
+                //swagger.AddSecurityRequirement(new Dictionary<string, IEnumerable<string>> {
+                //    { "Bearer", Enumerable.Empty<string>() },
+                //});
+
+                //Set the comments path for the Swagger JSON and UI.
+                //var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                //var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                //swagger.IncludeXmlComments(xmlPath);
+            });
+
+
+            // ===== Add Jwt Authentication ========
+            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear(); // => remove default claims
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = Configuration["Jwt:Issuer"],
+                    ValidAudience = Configuration["Jwt:Issuer"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
+                };
+                options.Events = new JwtBearerEvents
+                {
+                    OnAuthenticationFailed = context =>
+                    {
+                        if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
+                        {
+                            context.Response.Headers.Add("Token-Expired", "true");
+                        }
+                        return Task.CompletedTask;
+                    }
+                };
+            });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -60,6 +124,7 @@ namespace BankWebAPI
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+
             }
 
             app.UseHttpsRedirection();
@@ -72,6 +137,25 @@ namespace BankWebAPI
             {
                 endpoints.MapControllers();
             });
+
+            if (true)
+            {
+                app.UseDeveloperExceptionPage();
+                // Enable middleware to serve generated Swagger as a JSON endpoint.
+                //app.UseSwagger();
+                //app.UseSwaggerUI(c =>
+                //{
+                //    string swaggerJsonBasePath = string.IsNullOrWhiteSpace(c.RoutePrefix) ? "." : "..";
+                //    c.SwaggerEndpoint($"{swaggerJsonBasePath}/swagger/v1/swagger.json", "Bank Web API");
+                //    c.DefaultModelsExpandDepth(-1);
+                //});
+
+                app.UseSwagger();
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Bank Web API");
+                });
+            }
         }
     }
     public static class ServiceDependencySolver

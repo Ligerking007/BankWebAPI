@@ -12,6 +12,7 @@ using Core.Models.Bank;
 using HtmlAgilityPack;
 using Microsoft.Extensions.Logging;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Support.UI;
 using Repository.Interfaces.BankDB;
 using Repository.Models.BankDB;
 
@@ -64,6 +65,7 @@ namespace Core.Services
                 }
 
                 res.IsSuccess = true;
+                res.Message = "Completed";
             }
             catch (Exception ex)
             {
@@ -226,6 +228,7 @@ namespace Core.Services
                 _ITransactionRepository.Add(modelDB, true);
 
                 res.IsSuccess = true;
+                res.Message = "Completed";
                 res.Code = req.ReferenceNo;
             }
             catch (Exception ex)
@@ -262,25 +265,30 @@ namespace Core.Services
         {
             try
             {
-                var driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
-                
-                //Navigate to DotNet website
-                driver.Navigate().GoToUrl("http://randomiban.com/?country=Netherlands");
-                string html = driver.PageSource;
 
-                HtmlDocument doc = new HtmlDocument();
+                var chromeOptions = new ChromeOptions();
+                chromeOptions.AddArguments("headless");
+                var driver = new ChromeDriver(chromeOptions);//Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
+                driver.Url = "http://randomiban.com/?country=Netherlands";
+                var result = driver.FindElementById("demo").Text;
+                return result;
+                //string html = driver.PageSource;
 
-                doc.LoadHtml(html);
+                //HtmlDocument doc = new HtmlDocument();
 
-                //get data in p Tag : <p id="demo" class="ibandisplay">NL28RABO3154172025</p>
-                var nodes = doc.DocumentNode.SelectNodes("//p")
-                    .Where(d => d.Attributes.Contains("id"))
-                    .Where(d => d.Attributes["id"].Value == "demo");
+                //doc.LoadHtml(html);
+                ////HtmlWeb web = new HtmlWeb();
+                ////var doc = web.Load("http://randomiban.com/?country=Netherlands");
 
-                foreach (HtmlNode node in nodes)
-                {
-                    return node.InnerText;
-                }
+                ////get data in p Tag : <p id="demo" class="ibandisplay">NL28RABO3154172025</p>
+                //var nodes = doc.DocumentNode.SelectNodes("//p")
+                //    .Where(d => d.Attributes.Contains("id"))
+                //    .Where(d => d.Attributes["id"].Value == "demo");
+
+                //foreach (HtmlNode node in nodes)
+                //{
+                //    return node.InnerText;
+                //}
             }
             catch(Exception ex)
             {
