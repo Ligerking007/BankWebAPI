@@ -12,9 +12,11 @@ namespace Repository.Models.BankDB
             Transactions = new HashSet<Transaction>();
         }
 
+        public long Id { get; set; }
         public string AccountNo { get; set; }
-        public string Ibanno { get; set; }
+        public string IbanNo { get; set; }
         public string FullName { get; set; }
+        public string IdCardPassport { get; set; }
         public decimal Balance { get; set; }
         public bool? IsActived { get; set; }
         public DateTime CreatedDate { get; set; }

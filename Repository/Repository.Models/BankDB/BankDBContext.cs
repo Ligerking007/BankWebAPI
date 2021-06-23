@@ -27,7 +27,9 @@ namespace Repository.Models.BankDB
         {
             if (!optionsBuilder.IsConfigured)
             {
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
                 optionsBuilder.UseSqlServer(ConfigManage.AppSetting["ConnectionStrings:DefaultConnection"]);
+
             }
         }
 
@@ -57,10 +59,16 @@ namespace Repository.Models.BankDB
                     .IsRequired()
                     .HasMaxLength(200);
 
-                entity.Property(e => e.Ibanno)
+                entity.Property(e => e.IbanNo)
                     .IsRequired()
                     .HasMaxLength(34)
-                    .HasColumnName("IBANNo");
+                    .HasColumnName("IbanNo");
+
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
+
+                entity.Property(e => e.IdCardPassport)
+                    .IsRequired()
+                    .HasMaxLength(20);
 
                 entity.Property(e => e.IsActived)
                     .IsRequired()
@@ -78,11 +86,13 @@ namespace Repository.Models.BankDB
 
             modelBuilder.Entity<MasterFee>(entity =>
             {
-                entity.HasKey(e => e.EffectiveDate);
+                entity.HasKey(e => new { e.EffectiveDate, e.FeeType });
 
                 entity.ToTable("MasterFee");
 
                 entity.Property(e => e.EffectiveDate).HasColumnType("date");
+
+                entity.Property(e => e.FeeType).HasMaxLength(1);
 
                 entity.Property(e => e.CreatedBy)
                     .IsRequired()
@@ -91,10 +101,6 @@ namespace Repository.Models.BankDB
                 entity.Property(e => e.CreatedTime).HasColumnType("datetime");
 
                 entity.Property(e => e.FeePercent).HasColumnType("decimal(9, 2)");
-
-                entity.Property(e => e.FeeType)
-                    .IsRequired()
-                    .HasMaxLength(1);
 
                 entity.Property(e => e.ModifiedBy).HasMaxLength(20);
 

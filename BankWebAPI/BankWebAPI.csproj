@@ -5,26 +5,35 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Infrastructure\**" />
-    <Compile Remove="Views\**" />
-    <Compile Remove="wwwroot\**" />
-    <Content Remove="Infrastructure\**" />
-    <Content Remove="Views\**" />
-    <Content Remove="wwwroot\**" />
-    <EmbeddedResource Remove="Infrastructure\**" />
-    <EmbeddedResource Remove="Views\**" />
-    <EmbeddedResource Remove="wwwroot\**" />
-    <None Remove="Infrastructure\**" />
-    <None Remove="Views\**" />
-    <None Remove="wwwroot\**" />
+    <Content Remove="Views\CustomerAccount\_TransactionPartial.cshtml" />
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Remove="Controllers\TransferController.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Remove="bundleconfig.json" />
+    <None Include="Views\CustomerAccount\Create.cshtml" />
+    <None Include="Views\CustomerAccount\Withdraw.cshtml" />
+    <None Include="Views\CustomerAccount\Details.cshtml" />
+    <None Include="Views\CustomerAccount\Index.cshtml" />
+    <None Include="Views\CustomerAccount\Deposit.cshtml" />
+    <None Include="Views\Errors\Error.cshtml" />
+    <None Include="Views\Errors\Error403.cshtml" />
+    <None Include="Views\Errors\Error404.cshtml" />
+    <None Include="Views\Home\Index.cshtml" />
+    <None Include="Views\Shared\_Layout.cshtml" />
+    <None Include="Views\Shared\_PaginationPartial.cshtml" />
+    <None Include="Views\CustomerAccount\Transfer.cshtml" />
+    <None Include="Views\_ViewImports.cshtml" />
+    <None Include="Views\_ViewStart.cshtml" />
+    <None Include="wwwroot\bundle\main.min.js" />
+    <None Include="wwwroot\bundle\vendor.min.js" />
+    <None Include="wwwroot\source\main\js\auto-datatable.js" />
+    <None Include="wwwroot\source\main\js\auto-dropdown.js" />
+    <None Include="wwwroot\source\main\js\moment-helper.js" />
+    <None Include="wwwroot\source\vendor\js\bootstrap.js" />
+    <None Include="wwwroot\source\vendor\js\datatables.js" />
+    <None Include="wwwroot\source\vendor\js\jquery.js" />
+    <None Include="wwwroot\source\vendor\js\jquery.validate.js" />
+    <None Include="wwwroot\source\vendor\js\jquery.validate.unobtrusive.js" />
+    <None Include="wwwroot\source\vendor\js\moment.js" />
   </ItemGroup>
 
   <ItemGroup>

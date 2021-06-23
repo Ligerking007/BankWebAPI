@@ -1,0 +1,32 @@
+@model Core.Models.Bank.CustomerAccountModel
+
+@{
+    ViewData["Title"] = "Create customer account";
+}
+
+<div class="text-center w-md-75 w-lg-50 mx-auto my-4">
+    <h2>@ViewData["Title"]</h2>
+    <form method="post">
+        <hr class="w-75" />
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <div class="form-group">
+            <label asp-for="FullName">
+                Customer name
+            </label>
+            <input class="form-control" asp-for="FullName" />
+            <span asp-validation-for="FullName" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="IdCardPassport">
+                ID Card / Passport
+              
+            </label>
+            <input class="form-control" asp-for="IdCardPassport" />
+            <span asp-validation-for="IdCardPassport" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <a class="btn btn-outline-secondary" asp-controller="Home" asp-action="Index">Cancel</a>
+            <button type="submit" class="btn btn-primary">Create</button>
+        </div>
+    </form>
+</div>

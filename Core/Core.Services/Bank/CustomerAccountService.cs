@@ -48,7 +48,6 @@ namespace Core.Services
                 if (modelUpdate != null)
                 {
                     modelUpdate.FullName = req.FullName;
-                    modelUpdate.Balance = req.Balance;
                     modelUpdate.ModifiedBy = req.CreatedBy ?? "System";
                     modelUpdate.ModifiedDate = DateTime.Now;
 
@@ -56,8 +55,9 @@ namespace Core.Services
                 }
                 else
                 {
+
                     req.AccountNo = GenerateAccountNo();
-                    req.Ibanno = GenerateIBANNo();
+                    req.IbanNo = GenerateIBANNo();
                     req.CreatedDate = DateTime.Now;
                     req.CreatedBy = req.CreatedBy ?? "System";
                     var modelDB = _IMapper.Map<CustomerAccount>(req);
@@ -239,13 +239,17 @@ namespace Core.Services
             }
             return res;
         }
-        public List<TransactionModel> GetTransactionList(string accountNo)
+        public List<TransactionModel> GetTransactionList(string accountNo, int pageIndex = 1, int itemsPerPage = 10)
         {
             List<TransactionModel> res = new List<TransactionModel>();
             try
             {
-                var queryDB = _ITransactionRepository.AsQueryable().Where(x => x.AccountNo == accountNo);
+                var queryDB = _ITransactionRepository.AsQueryable()
+                    .Where(x => x.AccountNo == accountNo)
+                    .Skip((pageIndex - 1) * itemsPerPage)
+                    .Take(itemsPerPage);
                 var queryMapping = _IMapper.Map<IEnumerable<TransactionModel>>(queryDB);
+                
                 res = queryMapping.ToList();
             }
             catch (Exception ex)
@@ -254,6 +258,22 @@ namespace Core.Services
             }
 
             return res;
+        }
+        public int GetTransactionListCount(string accountNo)
+        {
+            try
+            {
+                var count = _ITransactionRepository.AsQueryable()
+                    .Where(x => x.AccountNo == accountNo).Count();
+
+                return count;
+            }
+            catch (Exception ex)
+            {
+                _ILogger.Error(ex);
+            }
+
+            return 0;
         }
         public string GenerateAccountNo()
         {

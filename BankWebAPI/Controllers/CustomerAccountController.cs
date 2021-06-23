@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BankWebAPI.Infrastructure.Extensions;
+using BankWebAPI.Models;
+using BankWebAPI.Models.CustomerAccount;
 using Core.Interfaces;
 using Core.Models;
 using Core.Models.Bank;
@@ -10,10 +13,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BankWebAPI.Controllers
 {
-    [Route("api/[controller]/[action]")]
-    [ApiController]
+    [Route("[controller]/[action]")]
+    //[ApiController]
     public class CustomerAccountController : BaseController
     {
+        private const int ItemsPerPage = 10;
         private readonly ICustomerAccountService _ICustomerAccountService;
 
         public CustomerAccountController(
@@ -21,18 +25,20 @@ namespace BankWebAPI.Controllers
         {
             this._ICustomerAccountService = _ICustomerAccountService;
         }
-        //public IActionResult Index()
-        //{
-        //    //var x = _ICustomerAccountService.GenerateIBANNo();
-        //    return View();
-        //}
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public IActionResult Index()
+        {
+            var model = GetCustomerAccountList();
+            return this.View(model);
+        }
+        
 
-
-        //public IActionResult Create()
-        //{
-        //    return View();
-        //}
-        #region Web Form
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public IActionResult Create()
+        {
+            return View();
+        }
+        #region Web MVC
         [HttpPost]
         [ApiExplorerSettings(IgnoreApi = true)]
         public IActionResult Create(CustomerAccountModel model)
@@ -48,7 +54,37 @@ namespace BankWebAPI.Controllers
 
             return this.RedirectToAction("Index", "Home");
         }
+        [HttpPost]
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public IActionResult Details(string accountNo, int pageIndex = 1)
+        {
+            pageIndex = Math.Max(1, pageIndex);
+            var account =  GetAccount(accountNo);
+            if (account == null)
+            {
+                return this.Forbid();
+            }
 
+            var transCount = GetTransactionListCount(accountNo) ;
+            var transList = GetTransactionList(accountNo, pageIndex, ItemsPerPage)
+                .ToPaginatedList(transCount, pageIndex, ItemsPerPage);
+
+            var viewModel = (DetailsViewModel)account ;
+            viewModel.TransactionCount = transCount;
+            viewModel.TransactionList = transList;
+
+            return this.View(viewModel);
+        }
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public IActionResult Deposit()
+        {
+            var model = new TransferViewModel
+            {
+                CustomerAccounts = GetCustomerAccountList()
+            };
+
+            return View(model);
+        }
         [HttpPost]
         [ApiExplorerSettings(IgnoreApi = true)]
         public IActionResult Deposit(TransactionModel model)
@@ -66,6 +102,16 @@ namespace BankWebAPI.Controllers
 
             return this.RedirectToAction("Index", "Home");
         }
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public IActionResult Withdraw()
+        {
+            var model = new TransferViewModel
+            {
+                CustomerAccounts = GetCustomerAccountList()
+            };
+
+            return View(model);
+        }
         [HttpPost]
         [ApiExplorerSettings(IgnoreApi = true)]
         public IActionResult Withdraw(TransactionModel model)
@@ -81,9 +127,20 @@ namespace BankWebAPI.Controllers
 
             return this.RedirectToAction("Index", "Home");
         }
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public IActionResult Transfer()
+        {
+            var model = new TransferViewModel
+            {
+                CustomerAccounts = GetCustomerAccountList()
+            };
+
+            return this.View(model);
+        }
+
         [HttpPost]
         [ApiExplorerSettings(IgnoreApi = true)]
-        public IActionResult Transfer(TransactionModel model)
+        public IActionResult Transfer(TransferViewModel model)
         {
             if (!this.ModelState.IsValid)
             {
@@ -96,9 +153,12 @@ namespace BankWebAPI.Controllers
 
             return this.RedirectToAction("Index", "Home");
         }
+   
+
         #endregion
-        #region API
+        #region Function
         [HttpPost]
+        [ApiExplorerSettings(IgnoreApi = true)]
         public BaseResponse CreateAccount(CustomerAccountModel model)
         {
             model.CreatedBy = GetCurrentUserId();
@@ -106,6 +166,15 @@ namespace BankWebAPI.Controllers
             return result;
         }
         [HttpPost]
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public CustomerAccountModel GetAccount(string accountNo)
+        {
+            var result = _ICustomerAccountService.GetCustomerAccount(accountNo);
+            return result;
+        }
+        
+        [HttpPost]
+        [ApiExplorerSettings(IgnoreApi = true)]
         public BaseResponse DepositMoney(TransactionModel model)
         {
             model.ActionBy = GetCurrentUserId();
@@ -113,6 +182,7 @@ namespace BankWebAPI.Controllers
             return result;
         }
         [HttpPost]
+        [ApiExplorerSettings(IgnoreApi = true)]
         public BaseResponse WithdrawMoney(TransactionModel model)
         {
             model.ActionBy = GetCurrentUserId();
@@ -120,10 +190,32 @@ namespace BankWebAPI.Controllers
             return result;
         }
         [HttpPost]
+        [ApiExplorerSettings(IgnoreApi = true)]
         public BaseResponse TransferMoney(TransactionModel model)
         {
             model.ActionBy = GetCurrentUserId();
             var result = _ICustomerAccountService.TransferMoney(model);
+            return result;
+        }
+        [HttpPost]
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public List<TransactionModel> GetTransactionList(string accountNo, int pageIndex = 1, int itemsPerPage = 10)
+        {
+            var result = _ICustomerAccountService.GetTransactionList(accountNo, pageIndex, itemsPerPage);
+            return result;
+        }
+        [HttpPost]
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public int GetTransactionListCount(string accountNo)
+        {
+            var result = _ICustomerAccountService.GetTransactionListCount(accountNo);
+            return result;
+        }
+        [HttpPost]
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public List<CustomerAccountModel> GetCustomerAccountList()
+        {
+            var result = _ICustomerAccountService.GetCustomerAccountList();
             return result;
         }
         #endregion

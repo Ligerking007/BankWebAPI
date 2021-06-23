@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Core.Common;
@@ -16,13 +17,14 @@ namespace BankWebAPI
         public static void Main(string[] args)
         {
             CreateWebHostBuilder(args)
-
+.UseContentRoot(Directory.GetCurrentDirectory())
            .UseUrls(ConfigManage.AppSetting["Kestrel:UrlBE"])
            .Build().Run();
         }
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
           WebHost.CreateDefaultBuilder(args)
+
           .UseStartup<Startup>();
     }
 }

@@ -23,6 +23,7 @@ using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.Net.Http.Headers;
 
 namespace BankWebAPI
 {
@@ -86,8 +87,8 @@ namespace BankWebAPI
                 //var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 //swagger.IncludeXmlComments(xmlPath);
             });
-
-
+            services.AddMvc();
+            services.AddControllersWithViews();
             // ===== Add Jwt Authentication ========
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear(); // => remove default claims
 
@@ -126,16 +127,28 @@ namespace BankWebAPI
                 app.UseDeveloperExceptionPage();
 
             }
-
+            app.UseStatusCodePagesWithReExecute("/error/{0}");
             app.UseHttpsRedirection();
-
+            app.UseStaticFiles(
+                new StaticFileOptions
+                {
+                    OnPrepareResponse = ctx =>
+                    {
+                        const int cacheDurationInSeconds = 60 * 60 * 24 * 365; // 1 year
+                        ctx.Context.Response.Headers[HeaderNames.CacheControl] =
+                            $"public,max-age={cacheDurationInSeconds}";
+                    }
+                });
             app.UseRouting();
 
             app.UseAuthorization();
-
+           
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers();
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller=Home}/{action=Index}/{id?}"
+                    );
             });
 
             if (true)

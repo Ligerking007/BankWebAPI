@@ -25,10 +25,11 @@ CREATE TABLE [dbo].[User](
 GO
 
 CREATE TABLE [dbo].[CustomerAccount](
-	
+	[Id] bigint identity(1,1) NOT NULL,	
 	[AccountNo] [nvarchar](34) NOT NULL,
-	[IBANNo] [nvarchar](34) NOT NULL,
+	[IbanNo] [nvarchar](34) NOT NULL,
 	[FullName] [nvarchar](200) NOT NULL,
+	[IdCardPassport] [nvarchar](20) NOT NULL,
 	[Balance] [decimal](18, 2) NOT NULL,	
 	[IsActived] bit  NOT NULL DEFAULT 1,	
 	[CreatedDate] [datetime] NOT NULL,
@@ -69,7 +70,8 @@ CREATE TABLE [dbo].[MasterFee](
 	[ModifiedTime] [datetime] NULL,
  CONSTRAINT [PK_MasterFee] PRIMARY KEY CLUSTERED 
 (
-	[EffectiveDate] ASC
+	[EffectiveDate] ASC,
+	FeeType ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
@@ -134,7 +136,11 @@ GO
 
 
 
+INSERT INTO [dbo].[User]([UserId], [UserName], [PasswordHash], [FullName], [CreatedDate], [CreatedBy], [ModifiedDate], [ModifiedBy]) VALUES (N'System', N'System', N'System', N'System', getDate(), N'System', NULL, NULL);
 
+INSERT INTO [dbo].[MasterFee]([EffectiveDate], [FeeType], [FeePercent], [CreatedBy], [CreatedTime], [ModifiedBy], [ModifiedTime]) VALUES ('2021-06-01', N'T', .10, N'System', getDate(), NULL, NULL);
+INSERT INTO [dbo].[MasterFee]([EffectiveDate], [FeeType], [FeePercent], [CreatedBy], [CreatedTime], [ModifiedBy], [ModifiedTime]) VALUES ('2021-06-01', N'D', 0, N'System', getDate(), NULL, NULL);
+INSERT INTO [dbo].[MasterFee]([EffectiveDate], [FeeType], [FeePercent], [CreatedBy], [CreatedTime], [ModifiedBy], [ModifiedTime]) VALUES ('2021-06-01', N'W', 0, N'System', getDate(), NULL, NULL);
 
 
 

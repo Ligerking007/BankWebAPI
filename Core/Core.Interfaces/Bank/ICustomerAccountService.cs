@@ -11,8 +11,8 @@ namespace Core.Interfaces
         public CustomerAccountModel GetCustomerAccount(string accountNo);
         public List<CustomerAccountModel> GetCustomerAccountList();
 
-        public List<TransactionModel> GetTransactionList(string accountNo);
-
+        public List<TransactionModel> GetTransactionList(string accountNo, int pageIndex = 1, int itemsPerPage = 10);
+        public int GetTransactionListCount(string accountNo);
         public BaseResponse DepositMoney(TransactionModel req);
         public BaseResponse WithdrawMoney(TransactionModel req);
         public BaseResponse TransferMoney(TransactionModel req);

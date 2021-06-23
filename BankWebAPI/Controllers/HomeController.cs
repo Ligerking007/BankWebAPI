@@ -7,8 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BankWebAPI.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
+    [Route("[controller]")]
     public class HomeController : BaseController
     {
         [ApiExplorerSettings(IgnoreApi = true)]
