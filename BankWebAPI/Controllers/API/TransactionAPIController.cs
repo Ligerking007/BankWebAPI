@@ -1,10 +1,5 @@
-﻿using System;
+﻿
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using BankWebAPI.Infrastructure.Extensions;
-using BankWebAPI.Models;
-using BankWebAPI.Models.CustomerAccount;
 using Core.Interfaces;
 using Core.Models;
 using Core.Models.Bank;
@@ -63,9 +58,9 @@ namespace BankWebAPI.Controllers
             return result;
         }
         [HttpPost]
-        public List<TransactionModel> GetTransactionList(long id, int pageIndex = 1, int itemsPerPage = 10)
+        public List<TransactionModel> GetTransactionList(long id)
         {
-            var result = _ICustomerAccountService.GetTransactionList(id, pageIndex, itemsPerPage);
+            var result = _ICustomerAccountService.GetTransactionList(id);
             return result;
         }
         [HttpPost]

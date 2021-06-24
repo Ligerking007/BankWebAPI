@@ -1,9 +1,5 @@
-﻿using System;
+﻿
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using BankWebAPI.Infrastructure.Extensions;
-using BankWebAPI.Models;
 using BankWebAPI.Models.CustomerAccount;
 using Core.Interfaces;
 using Core.Models;
@@ -56,22 +52,21 @@ namespace BankWebAPI.Controllers
         }
         //[HttpPost]
         [ApiExplorerSettings(IgnoreApi = true)]
-        public IActionResult Details(long id, int pageIndex = 1)
+        public IActionResult Details(long id)
         {
-            pageIndex = Math.Max(1, pageIndex);
+          
             var account =  GetAccount(id);
             if (account == null)
             {
                 return this.Forbid();
             }
 
-            var transCount = GetTransactionListCount(id) ;
-            var transList = GetTransactionList(id, pageIndex, ItemsPerPage)
-                .ToPaginatedList(transCount, pageIndex, ItemsPerPage);
+            //var transCount = GetTransactionListCount(id) ;
+            var transList = GetTransactionList(id);
 
             var viewModel = new DetailsViewModel();
             viewModel.CustomerAccountModel = account;
-            viewModel.TransactionCount = transCount;
+            //viewModel.TransactionCount = transCount;
             viewModel.TransactionList = transList;
 
             return this.View(viewModel);
@@ -200,9 +195,9 @@ namespace BankWebAPI.Controllers
         }
         [HttpPost]
         [ApiExplorerSettings(IgnoreApi = true)]
-        public List<TransactionModel> GetTransactionList(long id, int pageIndex = 1, int itemsPerPage = 10)
+        public List<TransactionModel> GetTransactionList(long id)
         {
-            var result = _ICustomerAccountService.GetTransactionList(id, pageIndex, itemsPerPage);
+            var result = _ICustomerAccountService.GetTransactionList(id);
             return result;
         }
         [HttpPost]

@@ -11,7 +11,7 @@ namespace Core.Interfaces
         public CustomerAccountModel GetCustomerAccount(long id);
         public List<CustomerAccountModel> GetCustomerAccountList();
 
-        public List<TransactionModel> GetTransactionList(long id, int pageIndex = 1, int itemsPerPage = 10);
+        public List<TransactionModel> GetTransactionList(long id);
         public int GetTransactionListCount(long id);
         public BaseResponse DepositMoney(TransactionModel req);
         public BaseResponse WithdrawMoney(TransactionModel req);

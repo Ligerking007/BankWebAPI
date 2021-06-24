@@ -1,6 +1,6 @@
 ﻿namespace BankWebAPI.Models.CustomerAccount
 {   
-    using BankWebAPI.Infrastructure.Collections;
+
     using Core.Models.Bank;
     using System.Collections.Generic;
 

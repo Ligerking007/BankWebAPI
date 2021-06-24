@@ -242,15 +242,15 @@ namespace Core.Services
             }
             return res;
         }
-        public List<TransactionModel> GetTransactionList(long id, int pageIndex = 1, int itemsPerPage = 10)
+        public List<TransactionModel> GetTransactionList(long id)
         {
             List<TransactionModel> res = new List<TransactionModel>();
             try
             {
                 var data = _ITransactionRepository.AsQueryable()
                     .Where(x => x.SourceId == id || x.DestinationId==id)
-                    .Skip((pageIndex - 1) * itemsPerPage)
-                    .Take(itemsPerPage).Select(x=>new TransactionModel()
+                    //.Skip((pageIndex - 1) * itemsPerPage).Take(itemsPerPage)
+                    .Select(x=>new TransactionModel()
                     {
                         ActionType = x.ActionType,
                         SourceNo = x.Source.AccountNo,
@@ -344,6 +344,17 @@ namespace Core.Services
         {
             var count = _ITransactionRepository.AsQueryable().Count() + 1;
             var newStr = count.ToString().PadLeft(30, '0');
+
+            //var random = new Random();
+
+            //var arr = new int[30];
+            //for (int i = 0; i < 30; i++)
+            //{
+            //    arr[i] = random.Next(0, 10);
+            //}
+
+            //return string.Join(string.Empty, arr);
+
             return newStr;
         }
         public decimal CalculateFeeAmount(decimal amount, decimal feePercent)

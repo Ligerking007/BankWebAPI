@@ -17,7 +17,6 @@
     <None Include="Views\Errors\Error404.cshtml" />
     <None Include="Views\Home\Index.cshtml" />
     <None Include="Views\Shared\_Layout.cshtml" />
-    <None Include="Views\Shared\_PaginationPartial.cshtml" />
 
     <None Include="Views\_ViewImports.cshtml" />
     <None Include="Views\_ViewStart.cshtml" />
@@ -36,6 +35,7 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
+    <PackageReference Include="BuildBundlerMinifier" Version="3.2.449" />
     <PackageReference Include="BundlerMinifier.Core" Version="3.2.449" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.16" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="3.1.16" />
