@@ -76,12 +76,12 @@ namespace Core.Services
             return res;
         }
 
-        public CustomerAccountModel GetCustomerAccount(string accountNo)
+        public CustomerAccountModel GetCustomerAccount(long id)
         {
             CustomerAccountModel res = new CustomerAccountModel();
             try
             {
-                var queryDB = _ICustomerAccountRepository.AsQueryable().FirstOrDefault(f => f.AccountNo == accountNo);
+                var queryDB = _ICustomerAccountRepository.AsQueryable().FirstOrDefault(f => f.Id == id);
                 res = _IMapper.Map<CustomerAccountModel>(queryDB);
 
             }
@@ -116,7 +116,7 @@ namespace Core.Services
             try
             {
                 req.ActionType = "D";
-                var modelUpdate = _ICustomerAccountRepository.AsQueryable().FirstOrDefault(f => f.AccountNo == req.AccountNo);
+                var modelUpdate = _ICustomerAccountRepository.AsQueryable().FirstOrDefault(f => f.AccountNo == req.SourceNo);
                 if (modelUpdate != null)
                 {
 
@@ -128,6 +128,7 @@ namespace Core.Services
 
                     _ICustomerAccountRepository.Update(modelUpdate, true);
 
+                    req.DestinationId = modelUpdate.Id;
 
                     res = SaveTransaction(req);
                 }
@@ -146,7 +147,7 @@ namespace Core.Services
             try
             {
                 req.ActionType = "W";
-                var modelUpdate = _ICustomerAccountRepository.AsQueryable().FirstOrDefault(f => f.AccountNo == req.AccountNo);
+                var modelUpdate = _ICustomerAccountRepository.AsQueryable().FirstOrDefault(f => f.AccountNo == req.SourceNo);
                 if (modelUpdate != null)
                 {
 
@@ -162,7 +163,7 @@ namespace Core.Services
                     }
                     modelUpdate.Balance = CalculateBalanceWithdraw(modelUpdate.Balance, req.NetAmount);
                     _ICustomerAccountRepository.Update(modelUpdate, true);
-
+                    req.SourceId = modelUpdate.Id;
                     res = SaveTransaction(req);
                 }
             }
@@ -180,7 +181,7 @@ namespace Core.Services
             try
             {
                 req.ActionType = "T";
-                var modelUpdate = _ICustomerAccountRepository.AsQueryable().FirstOrDefault(f => f.AccountNo == req.AccountNo);
+                var modelUpdate = _ICustomerAccountRepository.AsQueryable().FirstOrDefault(f => f.AccountNo == req.SourceNo);
                 if (modelUpdate != null)
                 {
                     #region Source AccountNo
@@ -196,6 +197,7 @@ namespace Core.Services
                     }
                     modelUpdate.Balance = CalculateBalanceWithdraw(modelUpdate.Balance, req.NetAmount);
                     _ICustomerAccountRepository.Update(modelUpdate, true);
+                    req.SourceId = modelUpdate.Id;
                     #endregion
                     #region Destination AccountNo
                     var modelDestination = _ICustomerAccountRepository.AsQueryable().FirstOrDefault(f => f.AccountNo == req.DestinationNo);
@@ -203,6 +205,7 @@ namespace Core.Services
                     {
                         modelDestination.Balance = CalculateBalanceDeposit(modelDestination.Balance, req.Amount);//Destination - No Fee
                         _ICustomerAccountRepository.Update(modelDestination, true);
+                        req.DestinationId = modelDestination.Id;
                     }
                     #endregion
                     res = SaveTransaction(req);
@@ -239,18 +242,32 @@ namespace Core.Services
             }
             return res;
         }
-        public List<TransactionModel> GetTransactionList(string accountNo, int pageIndex = 1, int itemsPerPage = 10)
+        public List<TransactionModel> GetTransactionList(long id, int pageIndex = 1, int itemsPerPage = 10)
         {
             List<TransactionModel> res = new List<TransactionModel>();
             try
             {
-                var queryDB = _ITransactionRepository.AsQueryable()
-                    .Where(x => x.AccountNo == accountNo)
+                var data = _ITransactionRepository.AsQueryable()
+                    .Where(x => x.SourceId == id || x.DestinationId==id)
                     .Skip((pageIndex - 1) * itemsPerPage)
-                    .Take(itemsPerPage);
-                var queryMapping = _IMapper.Map<IEnumerable<TransactionModel>>(queryDB);
-                
-                res = queryMapping.ToList();
+                    .Take(itemsPerPage).Select(x=>new TransactionModel()
+                    {
+                        ActionType = x.ActionType,
+                        SourceNo = x.Source.AccountNo,
+                        DestinationNo = x.Destination.AccountNo,
+                        Amount = x.Amount,
+                        FeePercent = x.FeePercent,
+                        FeeAmount = x.FeeAmount,
+                        NetAmount = x.NetAmount,
+                        ActionDate = x.ActionDate,
+                        ActionBy = x.ActionBy,
+                        Description = x.Description,
+                        ReferenceNo = x.ReferenceNo,
+
+
+                    }).ToList();
+
+                res = data;
             }
             catch (Exception ex)
             {
@@ -259,12 +276,12 @@ namespace Core.Services
 
             return res;
         }
-        public int GetTransactionListCount(string accountNo)
+        public int GetTransactionListCount(long id)
         {
             try
             {
                 var count = _ITransactionRepository.AsQueryable()
-                    .Where(x => x.AccountNo == accountNo).Count();
+                    .Where(x => x.Id == id).Count();
 
                 return count;
             }

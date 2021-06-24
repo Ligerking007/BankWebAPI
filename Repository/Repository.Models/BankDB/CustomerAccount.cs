@@ -9,7 +9,8 @@ namespace Repository.Models.BankDB
     {
         public CustomerAccount()
         {
-            Transactions = new HashSet<Transaction>();
+            TransactionDestinations = new HashSet<Transaction>();
+            TransactionSources = new HashSet<Transaction>();
         }
 
         public long Id { get; set; }
@@ -25,6 +26,7 @@ namespace Repository.Models.BankDB
         public string ModifiedBy { get; set; }
 
         public virtual User CreatedByNavigation { get; set; }
-        public virtual ICollection<Transaction> Transactions { get; set; }
+        public virtual ICollection<Transaction> TransactionDestinations { get; set; }
+        public virtual ICollection<Transaction> TransactionSources { get; set; }
     }
 }

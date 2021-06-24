@@ -8,7 +8,7 @@ namespace Repository.Models.BankDB
     public partial class Transaction
     {
         public long Id { get; set; }
-        public string AccountNo { get; set; }
+        public long? SourceId { get; set; }
         public string ActionType { get; set; }
         public decimal Amount { get; set; }
         public decimal FeePercent { get; set; }
@@ -17,10 +17,11 @@ namespace Repository.Models.BankDB
         public string ActionBy { get; set; }
         public DateTime ActionDate { get; set; }
         public string ReferenceNo { get; set; }
-        public string DestinationNo { get; set; }
+        public long? DestinationId { get; set; }
         public string Description { get; set; }
 
-        public virtual CustomerAccount AccountNoNavigation { get; set; }
         public virtual User ActionByNavigation { get; set; }
+        public virtual CustomerAccount Destination { get; set; }
+        public virtual CustomerAccount Source { get; set; }
     }
 }

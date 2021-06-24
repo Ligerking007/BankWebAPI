@@ -8,11 +8,11 @@ namespace Core.Interfaces
     public interface ICustomerAccountService
     {
         public BaseResponse CreateCustomerAccount(CustomerAccountModel req);
-        public CustomerAccountModel GetCustomerAccount(string accountNo);
+        public CustomerAccountModel GetCustomerAccount(long id);
         public List<CustomerAccountModel> GetCustomerAccountList();
 
-        public List<TransactionModel> GetTransactionList(string accountNo, int pageIndex = 1, int itemsPerPage = 10);
-        public int GetTransactionListCount(string accountNo);
+        public List<TransactionModel> GetTransactionList(long id, int pageIndex = 1, int itemsPerPage = 10);
+        public int GetTransactionListCount(long id);
         public BaseResponse DepositMoney(TransactionModel req);
         public BaseResponse WithdrawMoney(TransactionModel req);
         public BaseResponse TransferMoney(TransactionModel req);

@@ -9,15 +9,15 @@
     <form method="post">
         <hr class="w-75" />
         <div class="form-group">
-            <label asp-for="AccountNo"></label>
-            <select class="custom-select form-control" asp-for="AccountNo">
-                <option disabled selected>Select source account...</option>
+            <label asp-for="SourceNo"></label>
+            <select class="custom-select form-control" asp-for="SourceNo">
+                <option disabled selected>Select account...</option>
                 @foreach (var account in Model.CustomerAccounts)
                 {
-                    <option value="@account.AccountNo">@account.FullName - @account.Balance.ToString("c2")</option>
+            <option value="@account.AccountNo">@account.FullName - ฿@String.Format("{0:n2}", @account.Balance)</option>
                 }
             </select>
-            <span asp-validation-for="AccountNo" class="text-danger"></span>
+            <span asp-validation-for="SourceNo" class="text-danger"></span>
         </div>
 
         <div class="form-group">

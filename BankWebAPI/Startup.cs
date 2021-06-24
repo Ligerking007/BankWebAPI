@@ -87,7 +87,7 @@ namespace BankWebAPI
                 //var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 //swagger.IncludeXmlComments(xmlPath);
             });
-            services.AddMvc();
+            services.AddMvcCore().AddRazorRuntimeCompilation();
             services.AddControllersWithViews();
             // ===== Add Jwt Authentication ========
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear(); // => remove default claims

@@ -39,7 +39,7 @@ CREATE TABLE [dbo].[CustomerAccount](
 
  CONSTRAINT [PK_CustomerAccount] PRIMARY KEY CLUSTERED 
 (
-	[AccountNo] ASC
+	[Id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
@@ -87,8 +87,9 @@ GO
 
 
 CREATE TABLE [dbo].[Transaction](
-	[Id] bigint identity(1,1) NOT NULL,	
-	[AccountNo] [nvarchar](34) NOT NULL,	
+	[Id] bigint identity(1,1) NOT NULL,
+	[SourceId] bigint NULL,	
+	--[AccountNo] [nvarchar](34) NOT NULL,	
 	[ActionType] [nvarchar](1) NOT NULL, -- T = Transfer, D = Deposit, W = Withdraw
 	[Amount] [decimal](18, 2) NOT NULL,
 	[FeePercent] [decimal](9, 2) NOT NULL,
@@ -97,7 +98,7 @@ CREATE TABLE [dbo].[Transaction](
 	[ActionBy] [nvarchar](20) NOT NULL,
 	[ActionDate] [datetime] NOT NULL,
 	[ReferenceNo] [nvarchar](100) NOT NULL,
-	[DestinationNo] [nvarchar](34) NULL,	
+	[DestinationId] bigint NULL,	
 	[Description] [nvarchar](200) NULL,
  CONSTRAINT [PK_Transaction] PRIMARY KEY CLUSTERED 
 (
@@ -106,12 +107,20 @@ CREATE TABLE [dbo].[Transaction](
 ) ON [PRIMARY] 
 GO
 
-ALTER TABLE [dbo].[Transaction]  WITH CHECK ADD  CONSTRAINT [FK_Transaction_CustomerAccount_AccountNo] FOREIGN KEY([AccountNo])
-REFERENCES [dbo].[CustomerAccount] ([AccountNo])
+ALTER TABLE [dbo].[Transaction]  WITH CHECK ADD  CONSTRAINT [FK_Transaction_CustomerAccount_SourceId] FOREIGN KEY([SourceId])
+REFERENCES [dbo].[CustomerAccount] ([Id])
 --ON DELETE CASCADE
 GO
 
-ALTER TABLE [dbo].[Transaction] CHECK CONSTRAINT [FK_Transaction_CustomerAccount_AccountNo]
+ALTER TABLE [dbo].[Transaction] CHECK CONSTRAINT [FK_Transaction_CustomerAccount_SourceId]
+GO
+
+ALTER TABLE [dbo].[Transaction]  WITH CHECK ADD  CONSTRAINT [FK_Transaction_CustomerAccount_DestinationId] FOREIGN KEY([DestinationId])
+REFERENCES [dbo].[CustomerAccount] ([Id])
+--ON DELETE CASCADE
+GO
+
+ALTER TABLE [dbo].[Transaction] CHECK CONSTRAINT [FK_Transaction_CustomerAccount_DestinationId]
 GO
 
 ALTER TABLE [dbo].[Transaction]  WITH CHECK ADD  CONSTRAINT [FK_Transaction_User_ActionBy] FOREIGN KEY([ActionBy])
@@ -138,9 +147,9 @@ GO
 
 INSERT INTO [dbo].[User]([UserId], [UserName], [PasswordHash], [FullName], [CreatedDate], [CreatedBy], [ModifiedDate], [ModifiedBy]) VALUES (N'System', N'System', N'System', N'System', getDate(), N'System', NULL, NULL);
 
-INSERT INTO [dbo].[MasterFee]([EffectiveDate], [FeeType], [FeePercent], [CreatedBy], [CreatedTime], [ModifiedBy], [ModifiedTime]) VALUES ('2021-06-01', N'T', .10, N'System', getDate(), NULL, NULL);
-INSERT INTO [dbo].[MasterFee]([EffectiveDate], [FeeType], [FeePercent], [CreatedBy], [CreatedTime], [ModifiedBy], [ModifiedTime]) VALUES ('2021-06-01', N'D', 0, N'System', getDate(), NULL, NULL);
+INSERT INTO [dbo].[MasterFee]([EffectiveDate], [FeeType], [FeePercent], [CreatedBy], [CreatedTime], [ModifiedBy], [ModifiedTime]) VALUES ('2021-06-01', N'D', .10, N'System', getDate(), NULL, NULL);
 INSERT INTO [dbo].[MasterFee]([EffectiveDate], [FeeType], [FeePercent], [CreatedBy], [CreatedTime], [ModifiedBy], [ModifiedTime]) VALUES ('2021-06-01', N'W', 0, N'System', getDate(), NULL, NULL);
+INSERT INTO [dbo].[MasterFee]([EffectiveDate], [FeeType], [FeePercent], [CreatedBy], [CreatedTime], [ModifiedBy], [ModifiedTime]) VALUES ('2021-06-01', N'T', 0, N'System', getDate(), NULL, NULL);
 
 
 

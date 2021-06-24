@@ -9,7 +9,7 @@ namespace Core.Common
     {
         public static DateTime StringToDate(this string date)
         {
-            //20180831            
+            //20210531            
             int year = Convert.ToInt16(date.Substring(0, 4));
             int month = Convert.ToInt16(date.Substring(4, 2));
             int day = Convert.ToInt16(date.Substring(6, 2));

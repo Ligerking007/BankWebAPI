@@ -4,22 +4,53 @@
     <div class="row flex-lg-row-reverse">
         <div class="col-12 col-lg-12">
        
-                <div class="card-body">
-                    <h5 class="card-title">Customer Accounts</h5>
-                    @foreach (var account in Model)
-                    {
-        <div class="d-flex flex-row justify-content-between hover-parent">
-            <p class="card-text">
-                <a asp-controller="CustomerAccount" asp-action="Details" asp-route-id="@account.AccountNo">@account.FullName</a>
-                <i class="fas fa-pen ml-1 cursor-pointer hover-visible text-muted text-primary-hover"
-                   data-toggle="modal" data-target="#editModal" data-id="@account.AccountNo">
-                </i>
-            </p>
-            <p class="card-text text-green text-right ml-3">฿@account.Balance</p>
-        </div>}
+            <div class="card-body">
+                <h5 class="card-title">Customer Account List</h5>
 
-                    @*<a class="btn btn-primary float-right" asp-controller="CustomerAccount" asp-action="Create">Create new account</a>*@
-                </div>
+                <table class="table table-hover table-bordered auto-datatable">
+                    <thead>
+                        <tr>
+                            <th data-priority="1">Account Name</th>
+                            <th data-priority="1">Account No.</th>
+                            <th data-priority="1">Balance</th>
+                            <th data-priority="2">Created Date</th>
+                            <th data-priority="3">Created By</th>
+                         
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var account in Model)
+                        {
+                            
+
+
+                        <tr>
+
+                            <td>
+                                <a asp-controller="CustomerAccount" asp-action="Details" asp-route-id="@account.Id">@account.FullName</a>
+                            </td>
+                            <td>
+                                @account.AccountNo
+                            </td>
+                            <td>
+                                <span class="text-green">@account.Balance</span>
+                            </td>
+                            <td class="auto-format-date">
+                                @account.CreatedDate.ToString("O")
+                            </td>
+                            <td>
+                                @account.CreatedBy
+                            </td>
+
+
+                        </tr>}
+                    </tbody>
+                </table>
+
+            </div>
+
+
             </div>
         
     </div>

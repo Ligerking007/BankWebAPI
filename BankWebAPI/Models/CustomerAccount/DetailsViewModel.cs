@@ -3,9 +3,9 @@
     using BankWebAPI.Infrastructure.Collections;
     using Core.Models.Bank;
 
-    public class DetailsViewModel : CustomerAccountModel
+    public class DetailsViewModel
     {
-
+        public CustomerAccountModel CustomerAccountModel { get; set; }
         public PaginatedList<TransactionModel> TransactionList { get; set; }
 
         public int TransactionCount { get; set; }

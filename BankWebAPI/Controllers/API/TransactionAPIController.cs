@@ -35,9 +35,9 @@ namespace BankWebAPI.Controllers
             return result;
         }
         [HttpPost]
-        public CustomerAccountModel GetAccount(string accountNo)
+        public CustomerAccountModel GetAccount(long id)
         {
-            var result = _ICustomerAccountService.GetCustomerAccount(accountNo);
+            var result = _ICustomerAccountService.GetCustomerAccount(id);
             return result;
         }
         
@@ -63,15 +63,15 @@ namespace BankWebAPI.Controllers
             return result;
         }
         [HttpPost]
-        public List<TransactionModel> GetTransactionList(string accountNo, int pageIndex = 1, int itemsPerPage = 10)
+        public List<TransactionModel> GetTransactionList(long id, int pageIndex = 1, int itemsPerPage = 10)
         {
-            var result = _ICustomerAccountService.GetTransactionList(accountNo, pageIndex, itemsPerPage);
+            var result = _ICustomerAccountService.GetTransactionList(id, pageIndex, itemsPerPage);
             return result;
         }
         [HttpPost]
-        public int GetTransactionListCount(string accountNo)
+        public int GetTransactionListCount(long id)
         {
-            var result = _ICustomerAccountService.GetTransactionListCount(accountNo);
+            var result = _ICustomerAccountService.GetTransactionListCount(id);
             return result;
         }
         [HttpPost]

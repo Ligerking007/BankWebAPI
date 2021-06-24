@@ -8,7 +8,8 @@ namespace Core.Models.Bank
     public partial class TransactionModel
     {
         public long Id { get; set; }
-        public string AccountNo { get; set; }
+        public long? SourceId { get; set; }
+        public string SourceNo { get; set; }
         public string ActionType { get; set; }
         public decimal Amount { get; set; }
         public decimal FeePercent { get; set; }
@@ -18,6 +19,7 @@ namespace Core.Models.Bank
         public DateTime ActionDate { get; set; }
         public string ReferenceNo { get; set; }
         public string DestinationNo { get; set; }
+        public long? DestinationId { get; set; }
         public string Description { get; set; }
 
         //public virtual CustomerAccount AccountNoNavigation { get; set; }

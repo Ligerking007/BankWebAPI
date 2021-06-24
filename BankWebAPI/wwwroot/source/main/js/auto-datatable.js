@@ -2,9 +2,9 @@
 
 $(document).ready(function() {
     $('.auto-datatable').DataTable({
-        "paging": false,
+        "paging": true,
         "searching": false,
-        "ordering": false,
+        "ordering": true,
         "info": false,
         responsive: true
     });

@@ -1,5 +1,4 @@
 ﻿using System;
-using Core.Common;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
@@ -28,8 +27,7 @@ namespace Repository.Models.BankDB
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer(ConfigManage.AppSetting["ConnectionStrings:DefaultConnection"]);
-
+                optionsBuilder.UseSqlServer("Server=10.119.75.51;Database=BankDB;user id=bankdb;password=bankdb;");
             }
         }
 
@@ -39,13 +37,13 @@ namespace Repository.Models.BankDB
 
             modelBuilder.Entity<CustomerAccount>(entity =>
             {
-                entity.HasKey(e => e.AccountNo);
-
                 entity.ToTable("CustomerAccount");
 
                 entity.HasIndex(e => e.AccountNo, "IX_CustomerAccount_AccountNo");
 
-                entity.Property(e => e.AccountNo).HasMaxLength(34);
+                entity.Property(e => e.AccountNo)
+                    .IsRequired()
+                    .HasMaxLength(34);
 
                 entity.Property(e => e.Balance).HasColumnType("decimal(18, 2)");
 
@@ -61,10 +59,7 @@ namespace Repository.Models.BankDB
 
                 entity.Property(e => e.IbanNo)
                     .IsRequired()
-                    .HasMaxLength(34)
-                    .HasColumnName("IbanNo");
-
-                entity.Property(e => e.Id).ValueGeneratedOnAdd();
+                    .HasMaxLength(34);
 
                 entity.Property(e => e.IdCardPassport)
                     .IsRequired()
@@ -120,10 +115,6 @@ namespace Repository.Models.BankDB
 
                 entity.HasIndex(e => e.ReferenceNo, "IX_Transaction_ReferenceNo");
 
-                entity.Property(e => e.AccountNo)
-                    .IsRequired()
-                    .HasMaxLength(34);
-
                 entity.Property(e => e.ActionBy)
                     .IsRequired()
                     .HasMaxLength(20);
@@ -138,8 +129,6 @@ namespace Repository.Models.BankDB
 
                 entity.Property(e => e.Description).HasMaxLength(200);
 
-                entity.Property(e => e.DestinationNo).HasMaxLength(34);
-
                 entity.Property(e => e.FeeAmount).HasColumnType("decimal(18, 2)");
 
                 entity.Property(e => e.FeePercent).HasColumnType("decimal(9, 2)");
@@ -150,15 +139,18 @@ namespace Repository.Models.BankDB
                     .IsRequired()
                     .HasMaxLength(100);
 
-                entity.HasOne(d => d.AccountNoNavigation)
-                    .WithMany(p => p.Transactions)
-                    .HasForeignKey(d => d.AccountNo)
-                    .OnDelete(DeleteBehavior.ClientSetNull);
-
                 entity.HasOne(d => d.ActionByNavigation)
                     .WithMany(p => p.Transactions)
                     .HasForeignKey(d => d.ActionBy)
                     .OnDelete(DeleteBehavior.ClientSetNull);
+
+                entity.HasOne(d => d.Destination)
+                    .WithMany(p => p.TransactionDestinations)
+                    .HasForeignKey(d => d.DestinationId);
+
+                entity.HasOne(d => d.Source)
+                    .WithMany(p => p.TransactionSources)
+                    .HasForeignKey(d => d.SourceId);
             });
 
             modelBuilder.Entity<User>(entity =>

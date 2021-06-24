@@ -52,24 +52,25 @@ namespace BankWebAPI.Controllers
             this.ShowSuccessMessage(result.Message);
             else this.ShowErrorMessage(result.Message);
 
-            return this.RedirectToAction("Index", "Home");
+            return this.RedirectToAction("Index", "CustomerAccount");
         }
-        [HttpPost]
+        //[HttpPost]
         [ApiExplorerSettings(IgnoreApi = true)]
-        public IActionResult Details(string accountNo, int pageIndex = 1)
+        public IActionResult Details(long id, int pageIndex = 1)
         {
             pageIndex = Math.Max(1, pageIndex);
-            var account =  GetAccount(accountNo);
+            var account =  GetAccount(id);
             if (account == null)
             {
                 return this.Forbid();
             }
 
-            var transCount = GetTransactionListCount(accountNo) ;
-            var transList = GetTransactionList(accountNo, pageIndex, ItemsPerPage)
+            var transCount = GetTransactionListCount(id) ;
+            var transList = GetTransactionList(id, pageIndex, ItemsPerPage)
                 .ToPaginatedList(transCount, pageIndex, ItemsPerPage);
 
-            var viewModel = (DetailsViewModel)account ;
+            var viewModel = new DetailsViewModel();
+            viewModel.CustomerAccountModel = account;
             viewModel.TransactionCount = transCount;
             viewModel.TransactionList = transList;
 
@@ -100,7 +101,7 @@ namespace BankWebAPI.Controllers
                 this.ShowSuccessMessage(result.Message);
             else this.ShowErrorMessage(result.Message);
 
-            return this.RedirectToAction("Index", "Home");
+            return this.RedirectToAction("Index", "CustomerAccount");
         }
         [ApiExplorerSettings(IgnoreApi = true)]
         public IActionResult Withdraw()
@@ -125,7 +126,7 @@ namespace BankWebAPI.Controllers
                 this.ShowSuccessMessage(result.Message);
             else this.ShowErrorMessage(result.Message);
 
-            return this.RedirectToAction("Index", "Home");
+            return this.RedirectToAction("Index", "CustomerAccount");
         }
         [ApiExplorerSettings(IgnoreApi = true)]
         public IActionResult Transfer()
@@ -151,7 +152,7 @@ namespace BankWebAPI.Controllers
                 this.ShowSuccessMessage(result.Message);
             else this.ShowErrorMessage(result.Message);
 
-            return this.RedirectToAction("Index", "Home");
+            return this.RedirectToAction("Index", "CustomerAccount");
         }
    
 
@@ -167,9 +168,9 @@ namespace BankWebAPI.Controllers
         }
         [HttpPost]
         [ApiExplorerSettings(IgnoreApi = true)]
-        public CustomerAccountModel GetAccount(string accountNo)
+        public CustomerAccountModel GetAccount(long id)
         {
-            var result = _ICustomerAccountService.GetCustomerAccount(accountNo);
+            var result = _ICustomerAccountService.GetCustomerAccount(id);
             return result;
         }
         
@@ -199,16 +200,16 @@ namespace BankWebAPI.Controllers
         }
         [HttpPost]
         [ApiExplorerSettings(IgnoreApi = true)]
-        public List<TransactionModel> GetTransactionList(string accountNo, int pageIndex = 1, int itemsPerPage = 10)
+        public List<TransactionModel> GetTransactionList(long id, int pageIndex = 1, int itemsPerPage = 10)
         {
-            var result = _ICustomerAccountService.GetTransactionList(accountNo, pageIndex, itemsPerPage);
+            var result = _ICustomerAccountService.GetTransactionList(id, pageIndex, itemsPerPage);
             return result;
         }
         [HttpPost]
         [ApiExplorerSettings(IgnoreApi = true)]
-        public int GetTransactionListCount(string accountNo)
+        public int GetTransactionListCount(long id)
         {
-            var result = _ICustomerAccountService.GetTransactionListCount(accountNo);
+            var result = _ICustomerAccountService.GetTransactionListCount(id);
             return result;
         }
         [HttpPost]
