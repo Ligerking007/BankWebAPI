@@ -62,32 +62,51 @@ namespace BankWebAPI
 
             services.AddControllers();
 
-            
-                services.AddSwaggerGen(c =>
-                {
-                    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Bank Web API", Version = "v1" });
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Bank Web API", Version = "v1" });
                     //var basePath = AppContext.BaseDirectory;
                     var xmlPath = Path.Combine(contentRoot, "BankWebAPI.xml");
-                    c.IncludeXmlComments(xmlPath);
+                c.IncludeXmlComments(xmlPath);
+
+
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    In = ParameterLocation.Header,
+                    Description = "Please insert JWT with Bearer into field",
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.ApiKey
                 });
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement {
+   {
+     new OpenApiSecurityScheme
+     {
+       Reference = new OpenApiReference
+       {
+         Type = ReferenceType.SecurityScheme,
+         Id = "Bearer"
+       }
+      },
+      new string[] { }
+    }
+});
+            });
 
-                //swagger.SwaggerDoc("BankWebAPI", new OpenApiInfo { Title = "Bank Web API", Version = "v1" });
-                //swagger.AddSecurityDefinition("Bearer",
-                //      new OpenApiSecurityScheme
-                //      {
-                //          In = "header",
-                //          Name = "Authorization",
-                //          Type = "apiKey"
-                //      });
-                //swagger.AddSecurityRequirement(new Dictionary<string, IEnumerable<string>> {
-                //    { "Bearer", Enumerable.Empty<string>() },
-                //});
+            //swagger.SwaggerDoc("BankWebAPI", new OpenApiInfo { Title = "Bank Web API", Version = "v1" });
+            //swagger.AddSecurityDefinition("Bearer",
+            //      new OpenApiSecurityScheme
+            //      {
+            //          In = "header",
+            //          Name = "Authorization",
+            //          Type = "apiKey"
+            //      });
+            //swagger.AddSecurityRequirement(new Dictionary<string, IEnumerable<string>> {
+            //    { "Bearer", Enumerable.Empty<string>() },
+            //});
 
-                //Set the comments path for the Swagger JSON and UI.
-                //var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                //var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-                //swagger.IncludeXmlComments(xmlPath);
-           
+
+
             services.AddMvc().AddRazorRuntimeCompilation().AddControllersAsServices();
             services.AddControllersWithViews();
             // ===== Add Jwt Authentication ========
@@ -143,7 +162,7 @@ namespace BankWebAPI
             app.UseRouting();
 
             app.UseAuthorization();
-           
+            app.UseAuthentication();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(

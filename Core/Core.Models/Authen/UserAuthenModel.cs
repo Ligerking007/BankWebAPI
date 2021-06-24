@@ -6,8 +6,8 @@ namespace Core.Models
     {
         public string Username { get; set; }
         public string Password { get; set; }
-        public string UserType { get; set; }
-        public Boolean Result { get; set; }
+        //public string UserType { get; set; }
+        //public Boolean Result { get; set; }
 
     }
 }

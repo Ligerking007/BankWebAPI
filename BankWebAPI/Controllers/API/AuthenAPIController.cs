@@ -30,6 +30,7 @@ namespace BankWebAPI.Controllers
         /// Get token for authentication and call API
         /// </summary>
         [HttpPost]
+        [AllowAnonymous]
         public async System.Threading.Tasks.Task<LoginModel> GetToken([FromBody] UserAuthenModel model)
         {
             IActionResult response = Unauthorized();

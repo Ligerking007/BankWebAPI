@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Core.Interfaces;
 using Core.Models;
 using Core.Models.Bank;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -10,6 +11,7 @@ namespace BankWebAPI.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = "Bearer")]
     public class TransactionAPIController : BaseController
     {
         private const int ItemsPerPage = 10;
