@@ -15,17 +15,14 @@
             </div>
             <div class="col-lg-6">
                 <h5 class="text-center">Account details</h5>
-                <div class="d-flex flex-row justify-content-between">
-                    <p>Name</p>
-                    <p class="ml-3">@Model.CustomerAccountModel.FullName</p>
-                </div>
+        
                 <div class="d-flex flex-row justify-content-between">
                     <p>ID Card / Passport</p>
-                    <p class="ml-3">@Model.CustomerAccountModel.IdCardPassport</p>
+                    <p class="ml-3"> <span id="idCardOrPassport">@Model.CustomerAccountModel.IdCardPassport</span></p>
                 </div>
                 <div class="d-flex flex-row justify-content-between">
                     <p>Current balance</p>
-                    <p class="text-green ml-3">฿@Model.CustomerAccountModel.Balance</p>
+                    <p class="text-green ml-3">฿@Model.CustomerAccountModel.Balance.ToString("#,##0.00")</p>
                 </div>
                 <div class="d-flex flex-row justify-content-between">
                     <p>Account number</p>
@@ -59,10 +56,17 @@
             </div>
             <div class="modal-body">
                 <form method="post">
-                    <input type="hidden" name="accountId" value="@Model.CustomerAccountModel.FullName">
+                    <input type="hidden" name="accountId" value="@Model.CustomerAccountModel.Id">
                     <div class="form-group">
                         <label>Name</label>
                         <input required class="form-control" type="text" name="name">
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            ID Card / Passport
+                        </label>
+                        <input required class="form-control" type="text" name="idCardPassport" />
+                       
                     </div>
                     <div class="text-center d-flex justify-content-between">
                         <button type="button" class="btn btn-secondary mr-auto" data-dismiss="modal">Cancel</button>
@@ -81,10 +85,11 @@
     <script>
         $('#editModal').on('show.bs.modal',
             function() {
-                let modal = $(this);
-                let name = $('#accountName').text();
-
-                modal.find('.modal-body input[name=name]').val(name);
+                let _modal = $(this);
+                let _name = $('#accountName').text();
+                let _idCardPassport = $('#idCardOrPassport').text();
+                _modal.find('.modal-body input[name=name]').val(_name);
+                _modal.find('.modal-body input[name=idCardPassport]').val(_idCardPassport);
             });
 
         $('#editModal').on('shown.bs.modal',
@@ -96,7 +101,7 @@
             event.preventDefault();
 
             $.ajax({
-                url: '@Url.Action("ChangeAccountNameAsync", "BankAccounts")',
+                url: '@Url.Action("UpdateAccount", "CustomerAccount")',
                 type: 'post',
                 data: $(event.target).serialize()
 
@@ -107,9 +112,11 @@
                     return;
                 }
 
-                let newName = $('#editModal input[name=name]').val();
-
-                $('#accountName').text(newName);
+                let _newName = $('#editModal input[name=name]').val();
+                let _newIdCard = $('#editModal input[name=idCardPassport]').val();
+                $('#accountName').text(_newName);
+                $('#idCardOrPassport').text(_newIdCard);
+                
             });
         });
     </script>

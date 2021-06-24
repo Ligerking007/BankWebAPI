@@ -29,13 +29,15 @@ namespace BankWebAPI
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             Configuration = configuration;
+            contentRoot = env.ContentRootPath;
+            //var contentRoot = configuration.GetValue<string>(WebHostDefaults.ContentRootKey);
         }
 
         public IConfiguration Configuration { get; }
-
+        public string contentRoot { get; }
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
@@ -60,13 +62,12 @@ namespace BankWebAPI
 
             services.AddControllers();
 
-            services.AddSwaggerGen(swagger =>
-            {
+            
                 services.AddSwaggerGen(c =>
                 {
                     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Bank Web API", Version = "v1" });
-                    var basePath = AppContext.BaseDirectory;
-                    var xmlPath = Path.Combine(basePath, "BankWebApi.xml");
+                    //var basePath = AppContext.BaseDirectory;
+                    var xmlPath = Path.Combine(contentRoot, "BankWebAPI.xml");
                     c.IncludeXmlComments(xmlPath);
                 });
 
@@ -86,8 +87,8 @@ namespace BankWebAPI
                 //var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 //var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 //swagger.IncludeXmlComments(xmlPath);
-            });
-            services.AddMvcCore().AddRazorRuntimeCompilation();
+           
+            services.AddMvc().AddRazorRuntimeCompilation().AddControllersAsServices();
             services.AddControllersWithViews();
             // ===== Add Jwt Authentication ========
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear(); // => remove default claims

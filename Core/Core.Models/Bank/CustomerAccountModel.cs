@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 #nullable disable
 
@@ -15,7 +16,9 @@ namespace Core.Models.Bank
         public long Id { get; set; }
         public string AccountNo { get; set; }
         public string IbanNo { get; set; }
+        [Required]
         public string FullName { get; set; }
+        [Required]
         public string IdCardPassport { get; set; }
         public decimal Balance { get; set; }
         public bool? IsActived { get; set; }

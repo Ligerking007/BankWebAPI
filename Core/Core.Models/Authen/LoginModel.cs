@@ -8,6 +8,7 @@ namespace Core.Models
     {
         public LoginResultType ResultCode { get; set; }
         public string UserID { get; set; }
+        public string Name { get; set; }
         public string UserType { get; set; }
         public DateTime ExpireTime { get; set; }
         public string ExpireTimeText { get; set; }

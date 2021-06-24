@@ -22,6 +22,9 @@ namespace BankWebAPI.Controllers
         }
 
         #region API
+        /// <summary>
+        /// Create account by full name and Id card or passport
+        /// </summary>
         [HttpPost]
         public BaseResponse CreateAccount(CustomerAccountModel model)
         {
@@ -29,13 +32,18 @@ namespace BankWebAPI.Controllers
             var result = _ICustomerAccountService.CreateCustomerAccount(model);
             return result;
         }
+        /// <summary>
+        /// Get account detail by account id
+        /// </summary>
         [HttpPost]
         public CustomerAccountModel GetAccount(long id)
         {
             var result = _ICustomerAccountService.GetCustomerAccount(id);
             return result;
         }
-        
+        /// <summary>
+        /// Deposit money to destination account no 
+        /// </summary>
         [HttpPost]
         public BaseResponse DepositMoney(TransactionModel model)
         {
@@ -43,6 +51,9 @@ namespace BankWebAPI.Controllers
             var result = _ICustomerAccountService.DepositMoney(model);
             return result;
         }
+        /// <summary>
+        /// Withdraw money from source account no 
+        /// </summary>
         [HttpPost]
         public BaseResponse WithdrawMoney(TransactionModel model)
         {
@@ -50,6 +61,9 @@ namespace BankWebAPI.Controllers
             var result = _ICustomerAccountService.WithdrawMoney(model);
             return result;
         }
+        /// <summary>
+        /// Transfer money from source account no to destination account no 
+        /// </summary>
         [HttpPost]
         public BaseResponse TransferMoney(TransactionModel model)
         {
@@ -57,18 +71,27 @@ namespace BankWebAPI.Controllers
             var result = _ICustomerAccountService.TransferMoney(model);
             return result;
         }
+        /// <summary>
+        /// Get all transaction by account id 
+        /// </summary>
         [HttpPost]
         public List<TransactionModel> GetTransactionList(long id)
         {
             var result = _ICustomerAccountService.GetTransactionList(id);
             return result;
         }
+        /// <summary>
+        /// Get transaction count number by account id (for paging)
+        /// </summary>
         [HttpPost]
         public int GetTransactionListCount(long id)
         {
             var result = _ICustomerAccountService.GetTransactionListCount(id);
             return result;
         }
+        /// <summary>
+        /// Get all account details
+        /// </summary>
         [HttpPost]
         public List<CustomerAccountModel> GetCustomerAccountList()
         {
@@ -76,9 +99,12 @@ namespace BankWebAPI.Controllers
             return result;
         }
         #endregion
+        /// <summary>
+        /// Test Api 
+        /// </summary>
         [HttpGet]
         [ApiExplorerSettings(IgnoreApi = true)]
-        public string Test()
+        public string TestAPI()
         {
             return "API is running";
         }

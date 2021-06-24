@@ -10,21 +10,18 @@ using Microsoft.AspNetCore.Mvc;
 namespace BankWebAPI.Controllers
 {
     [Route("[controller]/[action]")]
-    //[ApiController]
     public class CustomerAccountController : BaseController
     {
-        private const int ItemsPerPage = 10;
-        private readonly ICustomerAccountService _ICustomerAccountService;
-
-        public CustomerAccountController(
-            ICustomerAccountService _ICustomerAccountService)
+        private TransactionAPIController _TransactionAPIController;
+        public CustomerAccountController(TransactionAPIController _TransactionAPIController)
         {
-            this._ICustomerAccountService = _ICustomerAccountService;
+           
+            this._TransactionAPIController = _TransactionAPIController;
         }
         [ApiExplorerSettings(IgnoreApi = true)]
         public IActionResult Index()
         {
-            var model = GetCustomerAccountList();
+            var model = _TransactionAPIController.GetCustomerAccountList();
             return this.View(model);
         }
         
@@ -43,30 +40,25 @@ namespace BankWebAPI.Controllers
             {
                 return this.View(model);
             }
-            var result = CreateAccount(model);
+            var result = _TransactionAPIController.CreateAccount(model);
             if(result.IsSuccess)
             this.ShowSuccessMessage(result.Message);
             else this.ShowErrorMessage(result.Message);
 
             return this.RedirectToAction("Index", "CustomerAccount");
         }
-        //[HttpPost]
         [ApiExplorerSettings(IgnoreApi = true)]
         public IActionResult Details(long id)
         {
           
-            var account =  GetAccount(id);
+            var account = _TransactionAPIController.GetAccount(id);
             if (account == null)
             {
                 return this.Forbid();
             }
-
-            //var transCount = GetTransactionListCount(id) ;
-            var transList = GetTransactionList(id);
-
+            var transList = _TransactionAPIController.GetTransactionList(id);
             var viewModel = new DetailsViewModel();
             viewModel.CustomerAccountModel = account;
-            //viewModel.TransactionCount = transCount;
             viewModel.TransactionList = transList;
 
             return this.View(viewModel);
@@ -76,7 +68,7 @@ namespace BankWebAPI.Controllers
         {
             var model = new TransferViewModel
             {
-                CustomerAccounts = GetCustomerAccountList()
+                CustomerAccounts = _TransactionAPIController.GetCustomerAccountList()
             };
 
             return View(model);
@@ -91,7 +83,7 @@ namespace BankWebAPI.Controllers
             }
 
             model.ActionBy = GetCurrentUserId();
-            var result = _ICustomerAccountService.DepositMoney(model);
+            var result = _TransactionAPIController.DepositMoney(model);
             if (result.IsSuccess)
                 this.ShowSuccessMessage(result.Message);
             else this.ShowErrorMessage(result.Message);
@@ -103,7 +95,7 @@ namespace BankWebAPI.Controllers
         {
             var model = new TransferViewModel
             {
-                CustomerAccounts = GetCustomerAccountList()
+                CustomerAccounts = _TransactionAPIController.GetCustomerAccountList()
             };
 
             return View(model);
@@ -116,7 +108,7 @@ namespace BankWebAPI.Controllers
             {
                 return this.View(model);
             }
-            var result = WithdrawMoney(model);
+            var result = _TransactionAPIController.WithdrawMoney(model);
             if (result.IsSuccess)
                 this.ShowSuccessMessage(result.Message);
             else this.ShowErrorMessage(result.Message);
@@ -128,7 +120,7 @@ namespace BankWebAPI.Controllers
         {
             var model = new TransferViewModel
             {
-                CustomerAccounts = GetCustomerAccountList()
+                CustomerAccounts = _TransactionAPIController.GetCustomerAccountList()
             };
 
             return this.View(model);
@@ -142,84 +134,32 @@ namespace BankWebAPI.Controllers
             {
                 return this.View(model);
             }
-            var result = TransferMoney(model);
+            var result = _TransactionAPIController.TransferMoney(model);
             if (result.IsSuccess)
                 this.ShowSuccessMessage(result.Message);
             else this.ShowErrorMessage(result.Message);
 
             return this.RedirectToAction("Index", "CustomerAccount");
         }
-   
 
-        #endregion
-        #region Function
         [HttpPost]
         [ApiExplorerSettings(IgnoreApi = true)]
-        public BaseResponse CreateAccount(CustomerAccountModel model)
+        public IActionResult UpdateAccount(long accountId, string name, string idCardPassport)
         {
-            model.CreatedBy = GetCurrentUserId();
-            var result = _ICustomerAccountService.CreateCustomerAccount(model);
-            return result;
-        }
-        [HttpPost]
-        [ApiExplorerSettings(IgnoreApi = true)]
-        public CustomerAccountModel GetAccount(long id)
-        {
-            var result = _ICustomerAccountService.GetCustomerAccount(id);
-            return result;
-        }
-        
-        [HttpPost]
-        [ApiExplorerSettings(IgnoreApi = true)]
-        public BaseResponse DepositMoney(TransactionModel model)
-        {
-            model.ActionBy = GetCurrentUserId();
-            var result = _ICustomerAccountService.DepositMoney(model);
-            return result;
-        }
-        [HttpPost]
-        [ApiExplorerSettings(IgnoreApi = true)]
-        public BaseResponse WithdrawMoney(TransactionModel model)
-        {
-            model.ActionBy = GetCurrentUserId();
-            var result = _ICustomerAccountService.WithdrawMoney(model);
-            return result;
-        }
-        [HttpPost]
-        [ApiExplorerSettings(IgnoreApi = true)]
-        public BaseResponse TransferMoney(TransactionModel model)
-        {
-            model.ActionBy = GetCurrentUserId();
-            var result = _ICustomerAccountService.TransferMoney(model);
-            return result;
-        }
-        [HttpPost]
-        [ApiExplorerSettings(IgnoreApi = true)]
-        public List<TransactionModel> GetTransactionList(long id)
-        {
-            var result = _ICustomerAccountService.GetTransactionList(id);
-            return result;
-        }
-        [HttpPost]
-        [ApiExplorerSettings(IgnoreApi = true)]
-        public int GetTransactionListCount(long id)
-        {
-            var result = _ICustomerAccountService.GetTransactionListCount(id);
-            return result;
-        }
-        [HttpPost]
-        [ApiExplorerSettings(IgnoreApi = true)]
-        public List<CustomerAccountModel> GetCustomerAccountList()
-        {
-            var result = _ICustomerAccountService.GetCustomerAccountList();
-            return result;
+            var model = new CustomerAccountModel();
+            model.Id = accountId;
+            model.FullName = name;
+            model.IdCardPassport = idCardPassport;
+            var result = _TransactionAPIController.CreateAccount(model);
+            if (result.IsSuccess)
+                this.ShowSuccessMessage(result.Message);
+            else this.ShowErrorMessage(result.Message);
+            return this.Ok(new
+            {
+                success = result.IsSuccess
+            });
         }
         #endregion
-        //[HttpGet]
-        //[ApiExplorerSettings(IgnoreApi = true)]
-        //public string Test()
-        //{
-        //    return "API is running";
-        //}
+
     }
 }

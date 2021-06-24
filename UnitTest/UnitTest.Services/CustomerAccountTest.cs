@@ -1,8 +1,13 @@
+using BankWebAPI.Controllers;
 using Core.Interfaces;
+using Core.Models;
 using Core.Services;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 using Ninject;
 using Ninject.MockingKernel.Moq;
+using System;
+using System.Threading.Tasks;
 using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
 namespace UnitTest.Services
 {
@@ -18,7 +23,7 @@ namespace UnitTest.Services
             _kernel = new MoqMockingKernel();
 
             _kernel.Bind<ICustomerAccountService>().To<CustomerAccountService>();
-
+            _kernel.Bind<IAuthenticationService>().To<AuthenticationService>();
         }
         #region Calculate
         [TestMethod]
@@ -136,5 +141,21 @@ namespace UnitTest.Services
             Assert.AreEqual(length, 30);
         }
         #endregion
+
+        [TestMethod]
+        public async Task GetToken()
+        {
+            //Arrange
+            var _IAuthenticationService = _kernel.Get<AuthenticationService>();
+            var controller = new AuthenAPIController(_IAuthenticationService);
+
+            UserAuthenModel model = new UserAuthenModel();
+            model.Username = "System";
+            model.Password = "System";
+            //Act
+            var result = await controller.GetToken(model);
+            bool checkNull = string.IsNullOrEmpty(result.Token);
+            Assert.AreEqual(checkNull, false);
+        }
     }
 }

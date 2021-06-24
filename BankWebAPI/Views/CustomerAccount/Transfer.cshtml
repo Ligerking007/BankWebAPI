@@ -14,7 +14,7 @@
                 <option disabled selected>Select source account...</option>
                 @foreach (var account in Model.CustomerAccounts)
                 {
-            <option value="@account.AccountNo">@account.FullName - ฿@String.Format("{0:n2}", @account.Balance)</option>
+            <option value="@account.AccountNo">@account.FullName - @account.AccountNo - ฿@String.Format("{0:n2}", @account.Balance)</option>
                 }
             </select>
             <span asp-validation-for="SourceNo" class="text-danger"></span>
@@ -29,7 +29,7 @@
                     <option disabled selected>...or choose another one of your accounts</option>
                     @foreach (var account in Model.CustomerAccounts)
                     {
-                <option value="@account.AccountNo">@account.FullName - ฿@String.Format("{0:n2}", @account.Balance)</option>
+                <option value="@account.AccountNo">@account.FullName - @account.AccountNo - ฿@String.Format("{0:n2}", @account.Balance)</option>
                     }
                 </select>
             }

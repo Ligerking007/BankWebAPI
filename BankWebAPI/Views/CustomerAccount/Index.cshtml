@@ -34,10 +34,10 @@
                                 @account.AccountNo
                             </td>
                             <td>
-                                <span class="text-green">@account.Balance</span>
+                                <span class="text-green">@account.Balance.ToString("#,##0.00")</span>
                             </td>
                             <td class="auto-format-date">
-                                @account.CreatedDate.ToString("O")
+                                @account.CreatedDate.ToString("MM/dd/yyyy H:mm")
                             </td>
                             <td>
                                 @account.CreatedBy

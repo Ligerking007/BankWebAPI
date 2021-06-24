@@ -44,11 +44,12 @@ namespace Core.Services
             BaseResponse res = new BaseResponse() { IsSuccess = false };
             try
             {
-                var modelUpdate = _ICustomerAccountRepository.AsQueryable().FirstOrDefault(f => f.AccountNo == req.AccountNo);
+                var modelUpdate = _ICustomerAccountRepository.AsQueryable().FirstOrDefault(f => f.Id == req.Id);
                 if (modelUpdate != null)
                 {
                     modelUpdate.FullName = req.FullName;
-                    modelUpdate.ModifiedBy = req.CreatedBy ?? "System";
+                    modelUpdate.IdCardPassport = req.IdCardPassport;
+                    modelUpdate.ModifiedBy = req.CreatedBy ;
                     modelUpdate.ModifiedDate = DateTime.Now;
 
                     _ICustomerAccountRepository.Update(modelUpdate, true);
@@ -59,7 +60,7 @@ namespace Core.Services
                     req.AccountNo = GenerateAccountNo();
                     req.IbanNo = GenerateIBANNo();
                     req.CreatedDate = DateTime.Now;
-                    req.CreatedBy = req.CreatedBy ?? "System";
+                    req.CreatedBy = req.CreatedBy ;
                     var modelDB = _IMapper.Map<CustomerAccount>(req);
                     _ICustomerAccountRepository.Add(modelDB, true);
                 }
@@ -132,6 +133,10 @@ namespace Core.Services
 
                     res = SaveTransaction(req);
                 }
+                else
+                {
+                    res.Message = "Please input source account no!";
+                }
             }
             catch (Exception ex)
             {
@@ -166,7 +171,11 @@ namespace Core.Services
                     req.SourceId = modelUpdate.Id;
                     res = SaveTransaction(req);
                 }
+                else
+            {
+                res.Message = "Please input source account no!";
             }
+        }
             catch (Exception ex)
             {
                 res.IsSuccess = false;
@@ -181,6 +190,10 @@ namespace Core.Services
             try
             {
                 req.ActionType = "T";
+                if (string.IsNullOrEmpty(req.DestinationNo))
+                {
+                    res.Message = "Please input destination account no!";
+                }
                 var modelUpdate = _ICustomerAccountRepository.AsQueryable().FirstOrDefault(f => f.AccountNo == req.SourceNo);
                 if (modelUpdate != null)
                 {
@@ -210,7 +223,11 @@ namespace Core.Services
                     #endregion
                     res = SaveTransaction(req);
                 }
+                else
+            {
+                res.Message = "Please input source account no!";
             }
+        }
             catch (Exception ex)
             {
                 res.IsSuccess = false;
@@ -225,7 +242,7 @@ namespace Core.Services
             try
             {
                 req.ActionDate = DateTime.Now;
-                req.ActionBy = req.ActionBy ?? "System";
+                req.ActionBy = req.ActionBy;
                 req.ReferenceNo = GenerateReferenceNo();
                 var modelDB = _IMapper.Map<Transaction>(req);
                 _ITransactionRepository.Add(modelDB, true);

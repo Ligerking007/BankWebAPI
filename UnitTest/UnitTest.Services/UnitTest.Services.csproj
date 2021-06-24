@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\BankWebAPI\BankWebAPI.csproj" />
     <ProjectReference Include="..\..\Core\Core.Common\Core.Common.csproj" />
     <ProjectReference Include="..\..\Core\Core.Interfaces\Core.Interfaces.csproj" />
     <ProjectReference Include="..\..\Core\Core.Services\Core.Services.csproj" />

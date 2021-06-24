@@ -13,7 +13,7 @@
             <label asp-for="FullName">
                 Customer name
             </label>
-            <input class="form-control" asp-for="FullName" />
+            <input class="form-control" asp-for="FullName" required />
             <span asp-validation-for="FullName" class="text-danger"></span>
         </div>
         <div class="form-group">
@@ -21,7 +21,7 @@
                 ID Card / Passport
               
             </label>
-            <input class="form-control" asp-for="IdCardPassport" />
+            <input class="form-control" asp-for="IdCardPassport" required />
             <span asp-validation-for="IdCardPassport" class="text-danger"></span>
         </div>
         <div class="form-group">

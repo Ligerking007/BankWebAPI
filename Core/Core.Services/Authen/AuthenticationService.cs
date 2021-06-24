@@ -20,7 +20,7 @@ namespace Core.Services
             {
 
                 UserID = vm.Username,
-                UserType = vm.UserType,
+                Name = "System Name",
                 ResultCode = LoginResultType.Success,
                 ResutlMessage = "Login success",
                 IsSuccess = true,

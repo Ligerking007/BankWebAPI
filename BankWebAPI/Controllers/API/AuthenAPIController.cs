@@ -15,6 +15,7 @@ namespace BankWebAPI.Controllers
 {
     [Authorize]
     [Route("api/[controller]/[action]")]
+    [ApiController]
     public class AuthenAPIController : BaseController
     {
         private IAuthenticationService _IAuthenticationService;
@@ -25,7 +26,9 @@ namespace BankWebAPI.Controllers
             this._IAuthenticationService = _IAuthenticationService;
         }
 
-
+        /// <summary>
+        /// Get token for authentication and call API
+        /// </summary>
         [HttpPost]
         public async System.Threading.Tasks.Task<LoginModel> GetToken([FromBody] UserAuthenModel model)
         {
@@ -54,8 +57,9 @@ namespace BankWebAPI.Controllers
             if (data.UserID != null)
             {
                 var claims = new[] {
+                    new Claim(JwtRegisteredClaimNames.Sub, data.UserID),
                     new Claim("UserId", data.UserID ),
-                    new Claim("UserType", data.UserType),
+                    new Claim("Name", data.Name ),
                     new Claim("ExpireTime", data.ExpireTime.ToString("yyyy-MM-dd HH:mm:ss")),
                     new Claim("ResutlMessage", data.ResutlMessage),
                     new Claim("IsSuccess", (string)data.IsSuccess.ToString()),

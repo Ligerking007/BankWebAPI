@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>BankWebAPI</name>
+    </assembly>
+    <members>
+        <member name="M:BankWebAPI.Controllers.AuthenAPIController.GetToken(Core.Models.UserAuthenModel)">
+            <summary>
+            Get token for authentication and call API
+            </summary>
+        </member>
+        <member name="M:BankWebAPI.Controllers.TransactionAPIController.CreateAccount(Core.Models.Bank.CustomerAccountModel)">
+            <summary>
+            Create account by full name and Id card or passport
+            </summary>
+        </member>
+        <member name="M:BankWebAPI.Controllers.TransactionAPIController.GetAccount(System.Int64)">
+            <summary>
+            Get account detail by account id
+            </summary>
+        </member>
+        <member name="M:BankWebAPI.Controllers.TransactionAPIController.DepositMoney(Core.Models.Bank.TransactionModel)">
+            <summary>
+            Deposit money to destination account no 
+            </summary>
+        </member>
+        <member name="M:BankWebAPI.Controllers.TransactionAPIController.WithdrawMoney(Core.Models.Bank.TransactionModel)">
+            <summary>
+            Withdraw money from source account no 
+            </summary>
+        </member>
+        <member name="M:BankWebAPI.Controllers.TransactionAPIController.TransferMoney(Core.Models.Bank.TransactionModel)">
+            <summary>
+            Transfer money from source account no to destination account no 
+            </summary>
+        </member>
+        <member name="M:BankWebAPI.Controllers.TransactionAPIController.GetTransactionList(System.Int64)">
+            <summary>
+            Get all transaction by account id 
+            </summary>
+        </member>
+        <member name="M:BankWebAPI.Controllers.TransactionAPIController.GetTransactionListCount(System.Int64)">
+            <summary>
+            Get transaction count number by account id (for paging)
+            </summary>
+        </member>
+        <member name="M:BankWebAPI.Controllers.TransactionAPIController.GetCustomerAccountList">
+            <summary>
+            Get all account details
+            </summary>
+        </member>
+        <member name="M:BankWebAPI.Controllers.TransactionAPIController.TestAPI">
+            <summary>
+            Test Api 
+            </summary>
+        </member>
+    </members>
+</doc>
