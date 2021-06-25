@@ -24,6 +24,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.Net.Http.Headers;
+using System.Text.RegularExpressions;
 
 namespace BankWebAPI
 {
@@ -46,9 +47,18 @@ namespace BankWebAPI
             RepositoryDependencySolver.Init(services);
             ServiceDependencySolver.Init(services);
 
+            string conn = Configuration.GetConnectionString("DefaultConnection");
+            if (conn.Contains("%CONTENTROOTPATH%"))
+            {
+                conn = conn.Replace("%CONTENTROOTPATH%", contentRoot);
+                var regex = new Regex(Regex.Escape("\\BankWebAPI"));  //Remove BankWebAPI Root Folder
+                conn = regex.Replace(conn, "", 1); // Only first match 
+            }
+
             services.AddDbContext<BankDBContext>(options =>
-              options.UseSqlServer(
-                  this.Configuration.GetConnectionString("DefaultConnection")));
+              options.UseSqlServer(conn));
+
+            
 
             // Auto Mapper Configurations
             var mapperConfig = new MapperConfiguration(mc =>

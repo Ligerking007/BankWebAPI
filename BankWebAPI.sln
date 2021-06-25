@@ -27,11 +27,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnitTest", "UnitTest", "{81
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTest.Services", "UnitTest\UnitTest.Services\UnitTest.Services.csproj", "{56AE62CC-5FB6-4BB5-9CCE-68BC7E843519}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Driver", "Driver", "{A2BF21F0-4CBE-4054-A4EA-666168692F10}"
-	ProjectSection(SolutionItems) = preProject
-		UnitTest\Driver\chromedriver.exe = UnitTest\Driver\chromedriver.exe
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -87,7 +82,6 @@ Global
 		{13684D00-2BC4-4508-BD75-52A43B12DA9E} = {A4216CB9-0566-4A61-BC92-FD93A038F0E5}
 		{2075DBC8-77F2-4289-9CC4-0DC8647FB5EB} = {A4216CB9-0566-4A61-BC92-FD93A038F0E5}
 		{56AE62CC-5FB6-4BB5-9CCE-68BC7E843519} = {8136714E-A685-4EBB-961B-1074E64DAE62}
-		{A2BF21F0-4CBE-4054-A4EA-666168692F10} = {8136714E-A685-4EBB-961B-1074E64DAE62}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3B2331E9-F8DA-43CA-8BBB-1CEA1900BDA8}

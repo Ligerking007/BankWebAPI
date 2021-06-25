@@ -49,6 +49,11 @@
             Get all account details
             </summary>
         </member>
+        <member name="M:BankWebAPI.Controllers.TransactionAPIController.GenerateIbanNo">
+            <summary>
+            Get iban no
+            </summary>
+        </member>
         <member name="M:BankWebAPI.Controllers.TransactionAPIController.TestAPI">
             <summary>
             Test Api 

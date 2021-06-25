@@ -100,6 +100,15 @@ namespace BankWebAPI.Controllers
             var result = _ICustomerAccountService.GetCustomerAccountList();
             return result;
         }
+        /// <summary>
+        /// Get iban no
+        /// </summary>
+        [HttpPost]
+        public string GenerateIbanNo()
+        {
+            var result = _ICustomerAccountService.GenerateIBANNo();
+            return result;
+        }
         #endregion
         /// <summary>
         /// Test Api 

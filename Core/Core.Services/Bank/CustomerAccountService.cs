@@ -44,7 +44,9 @@ namespace Core.Services
             BaseResponse res = new BaseResponse() { IsSuccess = false };
             try
             {
-                var modelUpdate = _ICustomerAccountRepository.AsQueryable().FirstOrDefault(f => f.Id == req.Id);
+                var modelUpdate = _ICustomerAccountRepository.AsQueryable()
+                    .FirstOrDefault(f => f.Id == req.Id || 
+                    (f.FullName== req.FullName && f.IdCardPassport==req.IdCardPassport));//Check Dupplicate
                 if (modelUpdate != null)
                 {
                     modelUpdate.FullName = req.FullName;
@@ -99,7 +101,7 @@ namespace Core.Services
             List<CustomerAccountModel> res = new List<CustomerAccountModel>();
             try
             {
-                var queryDB = _ICustomerAccountRepository.AsQueryable();
+                var queryDB = _ICustomerAccountRepository.AsQueryable().OrderBy(x=>x.CreatedDate);
                 var queryMapping = _IMapper.Map<IEnumerable<CustomerAccountModel>>(queryDB);
                 res = queryMapping.ToList();
             }
@@ -282,7 +284,7 @@ namespace Core.Services
                         ReferenceNo = x.ReferenceNo,
 
 
-                    }).ToList();
+                    }).OrderByDescending(x => x.ActionDate).ToList();
 
                 res = data;
             }
