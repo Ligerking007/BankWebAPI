@@ -27,6 +27,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnitTest", "UnitTest", "{81
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTest.Services", "UnitTest\UnitTest.Services\UnitTest.Services.csproj", "{56AE62CC-5FB6-4BB5-9CCE-68BC7E843519}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LocalDatabase", "LocalDatabase", "{D2B58320-A626-4E75-A9CC-A2BDFA341198}"
+	ProjectSection(SolutionItems) = preProject
+		LocalDatabase\BankDB.ldf = LocalDatabase\BankDB.ldf
+		LocalDatabase\BankDB.mdf = LocalDatabase\BankDB.mdf
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
