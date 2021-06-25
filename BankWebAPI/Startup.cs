@@ -51,14 +51,17 @@ namespace BankWebAPI
             if (conn.Contains("%CONTENTROOTPATH%"))
             {
                 conn = conn.Replace("%CONTENTROOTPATH%", contentRoot);
-                var regex = new Regex(Regex.Escape("\\BankWebAPI"));  //Remove BankWebAPI Root Folder
-                conn = regex.Replace(conn, "", 1); // Only first match 
+                int place = conn.LastIndexOf("\\BankWebAPI");//Remove BankWebAPI Root Folder on Last Match
+
+                conn = conn.Remove(place, "\\BankWebAPI".Length).Insert(place, "");
+
+
             }
 
             services.AddDbContext<BankDBContext>(options =>
               options.UseSqlServer(conn));
 
-            
+
 
             // Auto Mapper Configurations
             var mapperConfig = new MapperConfiguration(mc =>
@@ -76,8 +79,8 @@ namespace BankWebAPI
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Bank Web API", Version = "v1" });
-                    //var basePath = AppContext.BaseDirectory;
-                    var xmlPath = Path.Combine(contentRoot, "BankWebAPI.xml");
+                //var basePath = AppContext.BaseDirectory;
+                var xmlPath = Path.Combine(contentRoot, "BankWebAPI.xml");
                 c.IncludeXmlComments(xmlPath);
 
 
@@ -89,19 +92,19 @@ namespace BankWebAPI
                     Type = SecuritySchemeType.ApiKey
                 });
                 c.AddSecurityRequirement(new OpenApiSecurityRequirement {
-   {
-     new OpenApiSecurityScheme
-     {
-       Reference = new OpenApiReference
-       {
-         Type = ReferenceType.SecurityScheme,
-         Id = "Bearer"
-       }
-      },
-      new string[] { }
-    }
-});
-            });
+                   {
+                     new OpenApiSecurityScheme
+                     {
+                       Reference = new OpenApiReference
+                       {
+                         Type = ReferenceType.SecurityScheme,
+                         Id = "Bearer"
+                       }
+                      },
+                      new string[] { }
+                    }
+                });
+                            });
 
             //swagger.SwaggerDoc("BankWebAPI", new OpenApiInfo { Title = "Bank Web API", Version = "v1" });
             //swagger.AddSecurityDefinition("Bearer",
@@ -201,6 +204,7 @@ namespace BankWebAPI
             }
         }
     }
+
     public static class ServiceDependencySolver
     {
         public static void Init(IServiceCollection services)
