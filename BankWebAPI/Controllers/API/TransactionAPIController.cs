@@ -83,6 +83,15 @@ namespace BankWebAPI.Controllers
             return result;
         }
         /// <summary>
+        /// Get all transaction by grid account id 
+        /// </summary>
+        [HttpPost]
+        public TransactionGridResult GetTransactionList(Filter req)
+        {
+            var result = _ICustomerAccountService.GetTransactionList(req);
+            return result;
+        }
+        /// <summary>
         /// Get transaction count number by account id (for paging)
         /// </summary>
         [HttpPost]

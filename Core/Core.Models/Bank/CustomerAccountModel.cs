@@ -31,4 +31,18 @@ namespace Core.Models.Bank
         //public virtual User CreatedByNavigation { get; set; }
         //public virtual ICollection<Transaction> Transactions { get; set; }
     }
+    public class Filter : DataTableModel.GridAjaxPostModel
+    {
+        public long Id { get; set; }
+       
+
+    }
+    public class CustomerAccountGridResult : DataTableModel.Result
+    {
+        public List<CustomerAccountModel> data { get; set; }
+    }
+    public class TransactionGridResult : DataTableModel.Result
+    {
+        public List<TransactionModel> data { get; set; }
+    }
 }

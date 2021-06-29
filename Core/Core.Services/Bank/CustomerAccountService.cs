@@ -295,12 +295,65 @@ namespace Core.Services
 
             return res;
         }
+        public TransactionGridResult GetTransactionList(Filter req)
+        {
+            TransactionGridResult gridRes = new TransactionGridResult();
+
+            List<TransactionModel> res = new List<TransactionModel>();
+            try
+            {
+                var query = _ITransactionRepository.AsQueryable()
+                    .Where(x => x.SourceId == req.Id || x.DestinationId == req.Id)
+                    .Select(x => new TransactionModel()
+                    {
+                        Id = x.Id,
+                        ActionType = x.ActionType,
+                        SourceNo = x.Source.AccountNo,
+                        DestinationNo = x.Destination.AccountNo,
+                        Amount = x.Amount,
+                        FeePercent = x.FeePercent,
+                        FeeAmount = x.FeeAmount,
+                        NetAmount = x.NetAmount,
+                        ActionDate = x.ActionDate,
+                        ActionBy = x.ActionBy,
+                        Description = x.Description,
+                        ReferenceNo = x.ReferenceNo,
+
+
+                    }).AsQueryable();
+
+                gridRes.recordsTotal = query.Count();
+
+                foreach (var sort in req.GridOrder)
+                {
+                    //SORT
+                        query = query.OrderBy(req.GridColumns[sort.column].name, sort.dir);
+                }
+                //Paging
+                var data = query.Skip(req.GridStart).Take(req.GridLength).ToList();
+                if (data != null)
+                {
+                    res = data;
+                }
+
+                //Grid result of datatable paging
+                gridRes.draw = req.GridDraw;
+                gridRes.data = res;
+                gridRes.recordsFiltered = res.Count;
+            }
+            catch (Exception ex)
+            {
+                _ILogger.Error(ex);
+            }
+
+            return gridRes;
+        }
         public int GetTransactionListCount(long id)
         {
             try
             {
                 var count = _ITransactionRepository.AsQueryable()
-                    .Where(x => x.Id == id).Count();
+                    .Where(x => x.SourceId == id || x.DestinationId == id).Count();
 
                 return count;
             }

@@ -63,6 +63,13 @@ namespace BankWebAPI.Controllers
 
             return this.View(viewModel);
         }
+        [HttpPost]
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public IActionResult GetTransactionList(Filter req)
+        {
+            var transList = _TransactionAPIController.GetTransactionList(req);
+            return Json(transList);
+        }
         [ApiExplorerSettings(IgnoreApi = true)]
         public IActionResult Deposit()
         {

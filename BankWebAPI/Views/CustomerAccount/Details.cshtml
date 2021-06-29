@@ -15,7 +15,7 @@
             </div>
             <div class="col-lg-6">
                 <h5 class="text-center">Account details</h5>
-        
+
                 <div class="d-flex flex-row justify-content-between">
                     <p>ID Card / Passport</p>
                     <p class="ml-3"> <span id="idCardOrPassport">@Model.CustomerAccountModel.IdCardPassport</span></p>
@@ -42,7 +42,7 @@
             </div>
         </div>
 
-        </div>
+    </div>
 </div>
 
 <div id="editModal" class="modal fade" tabindex="-1" role="dialog">
@@ -66,7 +66,7 @@
                             ID Card / Passport
                         </label>
                         <input required class="form-control" type="text" name="idCardPassport" />
-                       
+
                     </div>
                     <div class="text-center d-flex justify-content-between">
                         <button type="button" class="btn btn-secondary mr-auto" data-dismiss="modal">Cancel</button>
@@ -77,12 +77,172 @@
         </div>
     </div>
 </div>
-
-<partial name="_TransactionPartial" model="@Model" />
+<br />
+<partial name="_TransactionPartial" />
 
 @section Scripts
 {
     <script>
+
+                var grid = $('#trans').DataTable({
+            "serverSide": true,
+                    "paging": true,
+                    "searching": true,
+            "ordering": true,
+            //"info": false,
+            "processing": true,
+            //responsive: true,
+            "scrollCollapse": true,
+            "scrollX": true,
+                    //"deferLoading": 10,
+                    //"deferRender": true,
+            ajax: {
+                url: '@Url.Action("GetTransactionList", "CustomerAccount")',
+                type: 'POST',
+                data: function (d) {
+                    //debugger;
+                    var model = $.extend({}, GetFilterGrid(), DataTableModel(d));
+                    // LoadingTools.unblockUI();
+                    return model;
+                },
+                    },
+                    "order": [[0, "desc"]],
+            "columns":
+                [
+
+                    {
+                        "title": "No",
+                        render: function (data, type, row, meta) {
+                            //console.log(row);
+                            return meta.row + meta.settings._iDisplayStart + 1;
+                        },
+                        "name": "Id",
+                        "className": "text-center",
+                        //"orderable": false,
+                    },
+                    {
+                        "title": "Action Type",
+                        //"data": "actionType",
+                         "name": "ActionType",
+                        render: function (data, type, row) {
+                            if (row.actionType == 'D') return "Deposit";
+                            else if (row.actionType == 'W') return "Withdraw";
+                            else if (row.actionType == 'T') return "Transfer";
+                        },
+                        "className": "text-center",
+
+                    },
+                    {
+                        "title": "Source No",
+                        "data": "sourceNo",
+                        "name": "SourceNo",
+                        "className": "text-center",
+
+                    },
+                    {
+                        "title": "Destination No",
+                        "data": "destinationNo",
+                        "name": "DestinationNo",
+                        "className": "text-center"
+                    },
+                    {
+                        "title": "Amount",
+                        //"data": "amount",
+                        "name": "Amount",
+                        "render": function (data, type, row) {
+                            return numeral(row.amount).format('0,0.00');
+
+                        },
+                        "className": "text-right",
+                    },
+                    {
+                        "title": "Fee Percent",
+                        //"data": "feePercent",
+                        "name": "FeePercent",
+                        "render": function (data, type, row) {
+                            return numeral(row.feePercent).format('0,0.00');
+
+                        },
+                        "className": "text-right",
+
+                    },
+                    {
+                        "title": "Fee Amount",
+                        //"data": "feeAmount",
+                        "name": "FeeAmount",
+                        "render": function (data, type, row) {
+                            return numeral(row.feeAmount).format('0,0.00');
+
+                        },
+                        "className": "text-right",
+
+                    }
+                    , {
+                        "title": "Net Amount",
+                        //"data": "netAmount",
+                        "name": "NetAmount",
+                        "render": function (data, type, row) {
+                            return numeral(row.netAmount).format('0,0.00');
+
+                        },
+                        "className": "text-right",
+
+                    },
+                    {
+                        "title": "Action Date",
+                        "data": "actionDate",
+                        "name": "ActionDate",
+                        "render": function (data, type, row) {
+                            return row.actionDate == null ? "" : moment(row.actionDate, "YYYY-MM-DDThh:mm:ss").format('DD/MM/YYYY HH:mm');
+
+                        },
+                        "className": "text-center",
+                        "autoWidth": true
+                        //"width": "120"
+                    },
+                    {
+                        "title": "Action By",
+                        "data": "actionBy",
+                        "name": "ActionBy",
+                        "className": "text-center",
+
+                    },
+                    {
+                        "title": "Description",
+                        "data": "description",
+                        "name": "Description",
+                        "className": "text-left",
+
+                    },
+                    {
+                        "title": "ReferenceNo",
+                        "data": "referenceNo",
+                        "name": "ReferenceNo",
+                        "className": "text-left",
+
+                    },
+                    //{
+                    //    "title": "Action",
+                    //    "className": "text-center",
+                    //    "render": function (data, type, row) {
+                    //        //console.log(row)
+                    //        var txt = "";
+                    //        txt += "<a class='btn btn-sm btn-default btnEdit'><i class='fa fa-edit'></i></a> &nbsp;";
+                    //        txt += "<a class='btn btn-sm btn-default btnDelete'><i class='fa fa-trash'></i></a>";
+                    //        return txt;
+                    //    },
+                    //    "width": "80"
+                    //},
+                ]
+                });
+        grid.page('first');
+        grid.ajax.reload(null, false);
+        function GetFilterGrid() {
+            return {
+                Id: '@Model.CustomerAccountModel.Id',
+            }
+            };
+
         $('#editModal').on('show.bs.modal',
             function() {
                 let _modal = $(this);
@@ -116,7 +276,7 @@
                 let _newIdCard = $('#editModal input[name=idCardPassport]').val();
                 $('#accountName').text(_newName);
                 $('#idCardOrPassport').text(_newIdCard);
-                
+
             });
         });
     </script>
