@@ -77,7 +77,7 @@ namespace BankWebAPI.Controllers
         /// Get all transaction by account id 
         /// </summary>
         [HttpPost]
-        public List<TransactionModel> GetTransactionList(long id)
+        public List<TransactionModel> GetTransactionListById(long id)
         {
             var result = _ICustomerAccountService.GetTransactionList(id);
             return result;

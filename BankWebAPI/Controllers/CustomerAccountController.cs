@@ -56,10 +56,10 @@ namespace BankWebAPI.Controllers
             {
                 return this.Forbid();
             }
-            var transList = _TransactionAPIController.GetTransactionList(id);
+            //var transList = _TransactionAPIController.GetTransactionList(id);
             var viewModel = new DetailsViewModel();
             viewModel.CustomerAccountModel = account;
-            viewModel.TransactionList = transList;
+            //viewModel.TransactionList = transList;
 
             return this.View(viewModel);
         }
