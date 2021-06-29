@@ -37,25 +37,8 @@
     "inputFiles": [
       "wwwroot/source/main/js/moment-helper.js",
       "wwwroot/source/main/js/auto-dropdown.js",
-      "wwwroot/source/main/js/auto-datatable.js"
-    ],
-    "minify": {
-      "enabled": true
-    }
-  },
-  {
-    "outputFileName": "wwwroot/bundle/qrcode.min.js",
-    "inputFiles": [
-      "wwwroot/source/qrcode/js/qrcode.js"
-    ],
-    "minify": {
-      "enabled": true
-    }
-  },
-  {
-    "outputFileName": "wwwroot/bundle/payments.min.js",
-    "inputFiles": [
-      "wwwroot/source/payments/js/payments.js"
+      "wwwroot/source/main/js/auto-datatable.js",
+      "wwwroot/source/main/js/numeral.min.js",
     ],
     "minify": {
       "enabled": true
