@@ -34,9 +34,14 @@
             Transfer money from source account no to destination account no 
             </summary>
         </member>
-        <member name="M:BankWebAPI.Controllers.TransactionAPIController.GetTransactionList(System.Int64)">
+        <member name="M:BankWebAPI.Controllers.TransactionAPIController.GetTransactionListById(System.Int64)">
             <summary>
             Get all transaction by account id 
+            </summary>
+        </member>
+        <member name="M:BankWebAPI.Controllers.TransactionAPIController.GetTransactionList(Core.Models.Bank.Filter)">
+            <summary>
+            Get all transaction by grid account id 
             </summary>
         </member>
         <member name="M:BankWebAPI.Controllers.TransactionAPIController.GetTransactionListCount(System.Int64)">
@@ -47,6 +52,11 @@
         <member name="M:BankWebAPI.Controllers.TransactionAPIController.GetCustomerAccountList">
             <summary>
             Get all account details
+            </summary>
+        </member>
+        <member name="M:BankWebAPI.Controllers.TransactionAPIController.GetCustomerAccountListByActived(Core.Models.Bank.Filter)">
+            <summary>
+            Get all account details by paging and sorting
             </summary>
         </member>
         <member name="M:BankWebAPI.Controllers.TransactionAPIController.GenerateIbanNo">
