@@ -3,55 +3,133 @@
 <div class="container">
     <div class="row flex-lg-row-reverse">
         <div class="col-12 col-lg-12">
-       
+
             <div class="card-body">
                 <h5 class="card-title">Customer Account List</h5>
-
-                <table class="table table-hover table-bordered auto-datatable">
-                    <thead>
-                        <tr>
-                            <th data-priority="1">Account Name</th>
-                            <th data-priority="1">Account No.</th>
-                            <th data-priority="1">Balance</th>
-                            <th data-priority="2">Created Date</th>
-                            <th data-priority="3">Created By</th>
-                         
-
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var account in Model)
-                        {
-                            
-
-
-                        <tr>
-
-                            <td>
-                                <a asp-controller="CustomerAccount" asp-action="Details" asp-route-id="@account.Id">@account.FullName</a>
-                            </td>
-                            <td>
-                                @account.AccountNo
-                            </td>
-                            <td>
-                                <span class="text-green">@account.Balance.ToString("#,##0.00")</span>
-                            </td>
-                            <td >
-                                @account.CreatedDate.ToString("dd/MM/yyyy HH:mm")
-                            </td>
-                            <td>
-                                @account.CreatedBy
-                            </td>
-
-
-                        </tr>}
-                    </tbody>
-                </table>
-
+                <table id="list1" class="table table-hover table-bordered " style="width:100%"></table>
             </div>
 
 
-            </div>
-        
+        </div>
+
     </div>
 </div>
+
+@section Scripts
+{
+    <script>
+
+                var grid = $('#list1').DataTable({
+            "serverSide": true,
+            "paging": true,
+            "searching": true,
+            "ordering": true,
+            //"info": false,
+            "processing": true,
+            //responsive: true,
+            "scrollCollapse": true,
+            "scrollX": true,
+                    //"deferLoading": 10,
+                    //"deferRender": true,
+            ajax: {
+                url: '@Url.Action("GetCustomerAccountList", "CustomerAccount")',
+                type: 'POST',
+                data: function (d) {
+                    //debugger;
+                    var model = $.extend({}, GetFilterGrid(), DataTableModel(d));
+                    // LoadingTools.unblockUI();
+                    return model;
+                },
+                    },
+                    "order": [[0, "desc"]],
+            "columns":
+                [
+
+                    {
+                        "title": "No",
+                        render: function (data, type, row, meta) {
+                            //console.log(row);
+                            return meta.row + meta.settings._iDisplayStart + 1;
+                        },
+                        "name": "Id",
+                        "className": "text-center",
+                        //"orderable": false,
+                    },
+                    {
+                        "title": "Account Name",
+                        //"data": "actionType",
+                        "name": "FullName",
+                        render: function (data, type, row) {
+                            //return "<a href='Details/'" + row.id + " >" + row.fullName + "</a>";
+                            //if (type == 'display') {
+
+                                data = '<form action="Details" method="post"><button name="id" type="submit" class="btn-as-link" value = "'+ row.id +'">' + row.fullName + '</button></form>';
+                            //}
+                            return data;
+                        },
+                        "className": "text-left",
+
+                    },
+                    {
+                        "title": "Account No.",
+                        "data": "accountNo",
+                        "name": "AccountNo",
+                        "className": "text-center",
+
+                    },
+                    {
+                        "title": "Balance",
+                        //"data": "amount",
+                        "name": "Balance",
+                        "render": function (data, type, row) {
+                            return numeral(row.balance).format('0,0.00');
+
+                        },
+                        "className": "text-right",
+                    },
+
+                    {
+                        "title": "Created Date",
+                        //"data": "createdDate",
+                        "name": "CreatedDate",
+                        "render": function (data, type, row) {
+                            return row.createdDate == null ? "" : moment(row.createdDate, "YYYY-MM-DDThh:mm:ss").format('DD/MM/YYYY HH:mm');
+
+                        },
+                        "className": "text-center",
+                        "autoWidth": true
+                        //"width": "120"
+                    },
+                    {
+                        "title": "Created By",
+                        "data": "createdBy",
+                        "name": "CreatedBy",
+                        "className": "text-center",
+
+                    }
+
+                    //{
+                    //    "title": "Action",
+                    //    "className": "text-center",
+                    //    "render": function (data, type, row) {
+                    //        //console.log(row)
+                    //        var txt = "";
+                    //        txt += "<a class='btn btn-sm btn-default btnEdit'><i class='fa fa-edit'></i></a> &nbsp;";
+                    //        txt += "<a class='btn btn-sm btn-default btnDelete'><i class='fa fa-trash'></i></a>";
+                    //        return txt;
+                    //    },
+                    //    "width": "80"
+                    //},
+                ]
+                });
+        //grid.page('first');
+        //grid.ajax.reload(null, false);
+        function GetFilterGrid() {
+            return {
+               // IsActived: true,
+            }
+    };
+
+
+    </script>
+}

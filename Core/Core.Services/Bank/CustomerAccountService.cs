@@ -4,12 +4,14 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Reflection;
+using System.Text;
 using AutoMapper;
 using Core.Common;
 using Core.Interfaces;
 using Core.Models;
 using Core.Models.Bank;
 using HtmlAgilityPack;
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
@@ -101,7 +103,7 @@ namespace Core.Services
             List<CustomerAccountModel> res = new List<CustomerAccountModel>();
             try
             {
-                var queryDB = _ICustomerAccountRepository.AsQueryable().OrderBy(x=>x.CreatedDate);
+                var queryDB = _ICustomerAccountRepository.AsQueryable().OrderBy(x => x.CreatedDate);
                 var queryMapping = _IMapper.Map<IEnumerable<CustomerAccountModel>>(queryDB);
                 res = queryMapping.ToList();
             }
@@ -112,7 +114,73 @@ namespace Core.Services
 
             return res;
         }
+        public CustomerAccountGridResult GetCustomerAccountList(Filter req)
+        {
+            List<CustomerAccountModel> res = new List<CustomerAccountModel>();
+            CustomerAccountGridResult gridRes = new CustomerAccountGridResult();
+            try
+            {
 
+                var parameters = CreateParamCustomerAccountList(req);
+                StringBuilder sqlCommand = new StringBuilder("exec dbo.[SP_GetCustomerAccountList] @IsActived, @SortBy, @SortDirection, @PageStart, @PageSize, @ReturnValue output");
+                var queryDB = _ICustomerAccountRepository.FromSql(sqlCommand.ToString(), parameters).AsEnumerable();
+
+             
+
+                var queryMapping = _IMapper.Map<IEnumerable<CustomerAccountModel>>(queryDB);
+                    var data = queryMapping.ToList();
+
+                //Total count
+                var paramValue = parameters[5] as SqlParameter;
+                gridRes.recordsTotal = (int)paramValue.Value;
+
+                if (data != null)
+                    {
+                        res = data;
+                    }
+
+                    //Grid result of datatable paging
+                    gridRes.draw = req.GridDraw;
+                    gridRes.data = res;
+                    gridRes.recordsFiltered = res.Count;
+
+            }
+            catch (Exception ex)
+            {
+                _ILogger.Error(ex);
+            }
+
+            return gridRes;
+        }
+        private object[] CreateParamCustomerAccountList(Filter req)
+        {
+
+            string sortBy = "";
+            string sortDirection = "ASC";
+
+            foreach (var sort in req.GridOrder)
+            {//SORT
+                sortBy = req.GridColumns[sort.column].name ;
+                sortDirection = sort.dir;
+            }
+            var _IsActived = new SqlParameter("@IsActived", req.IsActived??true);
+
+            var _SortBy = new SqlParameter("@SortBy", sortBy);
+            var _SortDirection = new SqlParameter("@SortDirection", sortDirection);
+            //Paging
+            var _Page = new SqlParameter("@PageStart", req.GridStart);
+            var _PageSize = new SqlParameter("@PageSize", req.GridLength);
+
+            var _ParamReturn = new SqlParameter
+            {
+                ParameterName = "@ReturnValue",
+                SqlDbType = System.Data.SqlDbType.Int,
+                Direction = System.Data.ParameterDirection.Output,
+            };
+            var parameters = new object[] { _IsActived, _SortBy, _SortDirection, _Page, _PageSize, _ParamReturn };
+
+            return parameters;
+        }
         public BaseResponse DepositMoney(TransactionModel req)
         {
             BaseResponse res = new BaseResponse() { IsSuccess = false };

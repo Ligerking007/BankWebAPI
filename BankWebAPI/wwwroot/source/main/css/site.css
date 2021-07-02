@@ -126,3 +126,11 @@ html {
 .word-break-all {
     word-break: break-all;
 }
+.btn-as-link {
+    border: none;
+    outline: none;
+    background: none;
+    cursor: pointer;
+    padding: 0;
+    text-decoration: underline;
+}

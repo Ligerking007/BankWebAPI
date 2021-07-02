@@ -110,6 +110,15 @@ namespace BankWebAPI.Controllers
             return result;
         }
         /// <summary>
+        /// Get all account details by paging and sorting
+        /// </summary>
+        [HttpPost]
+        public CustomerAccountGridResult GetCustomerAccountListByActived(Filter req)
+        {
+            var result = _ICustomerAccountService.GetCustomerAccountList(req);
+            return result;
+        }
+        /// <summary>
         /// Get iban no
         /// </summary>
         [HttpPost]
