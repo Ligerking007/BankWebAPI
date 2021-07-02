@@ -24,8 +24,14 @@ namespace BankWebAPI.Controllers
             var model = _TransactionAPIController.GetCustomerAccountList();
             return this.View(model);
         }
-        
 
+        [HttpPost]
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public IActionResult GetCustomerAccountList(Filter req)
+        {
+            var dataList = _TransactionAPIController.GetCustomerAccountListByActived(req);
+            return Json(dataList);
+        }
         [ApiExplorerSettings(IgnoreApi = true)]
         public IActionResult Create()
         {
@@ -47,6 +53,7 @@ namespace BankWebAPI.Controllers
 
             return this.RedirectToAction("Index", "CustomerAccount");
         }
+        [HttpPost]
         [ApiExplorerSettings(IgnoreApi = true)]
         public IActionResult Details(long id)
         {
@@ -56,10 +63,10 @@ namespace BankWebAPI.Controllers
             {
                 return this.Forbid();
             }
-            var transList = _TransactionAPIController.GetTransactionList(id);
+            //var transList = _TransactionAPIController.GetTransactionList(id);
             var viewModel = new DetailsViewModel();
             viewModel.CustomerAccountModel = account;
-            viewModel.TransactionList = transList;
+            //viewModel.TransactionList = transList;
 
             return this.View(viewModel);
         }

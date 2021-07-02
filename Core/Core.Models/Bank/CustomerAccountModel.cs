@@ -34,7 +34,8 @@ namespace Core.Models.Bank
     public class Filter : DataTableModel.GridAjaxPostModel
     {
         public long Id { get; set; }
-       
+        public bool? IsActived { get; set; }
+        
 
     }
     public class CustomerAccountGridResult : DataTableModel.Result

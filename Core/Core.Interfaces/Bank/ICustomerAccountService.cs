@@ -10,7 +10,7 @@ namespace Core.Interfaces
         public BaseResponse CreateCustomerAccount(CustomerAccountModel req);
         public CustomerAccountModel GetCustomerAccount(long id);
         public List<CustomerAccountModel> GetCustomerAccountList();
-
+        public CustomerAccountGridResult GetCustomerAccountList(Filter req);
         public List<TransactionModel> GetTransactionList(long id);
         public TransactionGridResult GetTransactionList(Filter req);
         public int GetTransactionListCount(long id);

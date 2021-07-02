@@ -77,7 +77,7 @@ namespace BankWebAPI.Controllers
         /// Get all transaction by account id 
         /// </summary>
         [HttpPost]
-        public List<TransactionModel> GetTransactionList(long id)
+        public List<TransactionModel> GetTransactionListById(long id)
         {
             var result = _ICustomerAccountService.GetTransactionList(id);
             return result;
@@ -107,6 +107,15 @@ namespace BankWebAPI.Controllers
         public List<CustomerAccountModel> GetCustomerAccountList()
         {
             var result = _ICustomerAccountService.GetCustomerAccountList();
+            return result;
+        }
+        /// <summary>
+        /// Get all account details by paging and sorting
+        /// </summary>
+        [HttpPost]
+        public CustomerAccountGridResult GetCustomerAccountListByActived(Filter req)
+        {
+            var result = _ICustomerAccountService.GetCustomerAccountList(req);
             return result;
         }
         /// <summary>
