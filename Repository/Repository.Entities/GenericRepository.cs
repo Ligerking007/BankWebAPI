@@ -11,6 +11,7 @@ using System.Data;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Data.SqlClient;
+using System.Threading.Tasks;
 
 namespace Repository.Entities
 {
@@ -79,7 +80,25 @@ namespace Repository.Entities
             }
             return newEntry;
         }
-
+        public virtual async Task<EntityEntry<TEntity>> AddAsync(TEntity entity, bool IsCommit = false)
+        {
+            EntityEntry<TEntity> newEntry = null;
+            try
+            {
+                newEntry = await DataSet.AddAsync(entity);
+                Entities.Entry(entity).State = EntityState.Added;
+                if (IsCommit)
+                {
+                    await Entities.SaveChangesAsync();
+                }
+                return newEntry;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return newEntry;
+        }
         public virtual EntityEntry<TEntity> Update(TEntity entity, bool IsCommit = false)
         { 
             EntityEntry<TEntity> updateEntry = null;
@@ -90,6 +109,25 @@ namespace Repository.Entities
                 if (IsCommit)
                 {
                     Entities.SaveChanges();
+                }
+                return updateEntry;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return updateEntry;
+        }
+        public virtual async Task<EntityEntry<TEntity>> UpdateAsync(TEntity entity, bool IsCommit = false)
+        {
+            EntityEntry<TEntity> updateEntry = null;
+            try
+            {
+                updateEntry = await Task.Run(() => DataSet.Update(entity));
+                Entities.Entry(entity).State = EntityState.Modified;
+                if (IsCommit)
+                {
+                    await Entities.SaveChangesAsync();
                 }
                 return updateEntry;
             }

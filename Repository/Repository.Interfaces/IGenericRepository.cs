@@ -16,8 +16,11 @@ namespace Repository.Interfaces
         IQueryable<TEntity> GetAll();
         IQueryable<TEntity> AsQueryable();
         EntityEntry<TEntity> Add(TEntity entity, bool IsCommit = false);
-        EntityEntry<TEntity> Update(TEntity entity, bool IsCommit = false);
-        int Delete(TEntity entity, bool IsCommit = false);
+		Task<EntityEntry<TEntity>> AddAsync(TEntity entity, bool IsCommit = false);
+		EntityEntry<TEntity> Update(TEntity entity, bool IsCommit = false);
+		Task<EntityEntry<TEntity>> UpdateAsync(TEntity entity, bool IsCommit = false);
+
+		int Delete(TEntity entity, bool IsCommit = false);
         IQueryable<TEntity> FromSql(string sql);
         IQueryable<TEntity> FromSql(string sql, object[] param);
         int ExecuteSql(string sql, object[] param);

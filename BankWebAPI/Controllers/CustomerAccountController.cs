@@ -1,5 +1,6 @@
 ﻿
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using BankWebAPI.Models.CustomerAccount;
 using Core.Interfaces;
 using Core.Models;
@@ -19,34 +20,34 @@ namespace BankWebAPI.Controllers
             this._TransactionAPIController = _TransactionAPIController;
         }
         [ApiExplorerSettings(IgnoreApi = true)]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var model = _TransactionAPIController.GetCustomerAccountList();
+            var model = await _TransactionAPIController.GetCustomerAccountList();
             return this.View(model);
         }
 
         [HttpPost]
         [ApiExplorerSettings(IgnoreApi = true)]
-        public IActionResult GetCustomerAccountList(Filter req)
+        public async Task<IActionResult> GetCustomerAccountList(Filter req)
         {
-            var dataList = _TransactionAPIController.GetCustomerAccountListByActived(req);
+            var dataList = await _TransactionAPIController.GetCustomerAccountListByActived(req);
             return Json(dataList);
         }
         [ApiExplorerSettings(IgnoreApi = true)]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
             return View();
         }
         #region Web MVC
         [HttpPost]
         [ApiExplorerSettings(IgnoreApi = true)]
-        public IActionResult Create(CustomerAccountModel model)
+        public async Task<IActionResult> Create(CustomerAccountModel model)
         {
             if (!this.ModelState.IsValid)
             {
                 return this.View(model);
             }
-            var result = _TransactionAPIController.CreateAccount(model);
+            var result = await _TransactionAPIController.CreateAccount(model);
             if(result.IsSuccess)
             this.ShowSuccessMessage(result.Message);
             else this.ShowErrorMessage(result.Message);
@@ -55,10 +56,10 @@ namespace BankWebAPI.Controllers
         }
         [HttpPost]
         [ApiExplorerSettings(IgnoreApi = true)]
-        public IActionResult Details(long id)
+        public async Task<IActionResult> Details(long id)
         {
           
-            var account = _TransactionAPIController.GetAccount(id);
+            var account = await _TransactionAPIController.GetAccount(id);
             if (account == null)
             {
                 return this.Forbid();
@@ -72,24 +73,24 @@ namespace BankWebAPI.Controllers
         }
         [HttpPost]
         [ApiExplorerSettings(IgnoreApi = true)]
-        public IActionResult GetTransactionList(Filter req)
+        public async Task<IActionResult> GetTransactionList(Filter req)
         {
-            var transList = _TransactionAPIController.GetTransactionList(req);
+            var transList = await _TransactionAPIController.GetTransactionList(req);
             return Json(transList);
         }
         [ApiExplorerSettings(IgnoreApi = true)]
-        public IActionResult Deposit()
+        public async Task<IActionResult> Deposit()
         {
             var model = new TransferViewModel
             {
-                CustomerAccounts = _TransactionAPIController.GetCustomerAccountList()
+                CustomerAccounts = await _TransactionAPIController.GetCustomerAccountList()
             };
 
             return View(model);
         }
         [HttpPost]
         [ApiExplorerSettings(IgnoreApi = true)]
-        public IActionResult Deposit(TransactionModel model)
+        public async Task<IActionResult> Deposit(TransactionModel model)
         {
             if (!this.ModelState.IsValid)
             {
@@ -97,7 +98,7 @@ namespace BankWebAPI.Controllers
             }
 
             model.ActionBy = GetCurrentUserId();
-            var result = _TransactionAPIController.DepositMoney(model);
+            var result = await _TransactionAPIController.DepositMoney(model);
             if (result.IsSuccess)
                 this.ShowSuccessMessage(result.Message);
             else this.ShowErrorMessage(result.Message);
@@ -105,24 +106,24 @@ namespace BankWebAPI.Controllers
             return this.RedirectToAction("Index", "CustomerAccount");
         }
         [ApiExplorerSettings(IgnoreApi = true)]
-        public IActionResult Withdraw()
+        public async Task<IActionResult> Withdraw()
         {
             var model = new TransferViewModel
             {
-                CustomerAccounts = _TransactionAPIController.GetCustomerAccountList()
+                CustomerAccounts = await _TransactionAPIController.GetCustomerAccountList()
             };
 
             return View(model);
         }
         [HttpPost]
         [ApiExplorerSettings(IgnoreApi = true)]
-        public IActionResult Withdraw(TransactionModel model)
+        public async Task<IActionResult> Withdraw(TransactionModel model)
         {
             if (!this.ModelState.IsValid)
             {
                 return this.View(model);
             }
-            var result = _TransactionAPIController.WithdrawMoney(model);
+            var result = await _TransactionAPIController.WithdrawMoney(model);
             if (result.IsSuccess)
                 this.ShowSuccessMessage(result.Message);
             else this.ShowErrorMessage(result.Message);
@@ -130,11 +131,11 @@ namespace BankWebAPI.Controllers
             return this.RedirectToAction("Index", "CustomerAccount");
         }
         [ApiExplorerSettings(IgnoreApi = true)]
-        public IActionResult Transfer()
+        public async Task<IActionResult> Transfer()
         {
             var model = new TransferViewModel
             {
-                CustomerAccounts = _TransactionAPIController.GetCustomerAccountList()
+                CustomerAccounts = await _TransactionAPIController.GetCustomerAccountList()
             };
 
             return this.View(model);
@@ -142,13 +143,13 @@ namespace BankWebAPI.Controllers
 
         [HttpPost]
         [ApiExplorerSettings(IgnoreApi = true)]
-        public IActionResult Transfer(TransferViewModel model)
+        public async Task<IActionResult> Transfer(TransferViewModel model)
         {
             if (!this.ModelState.IsValid)
             {
                 return this.View(model);
             }
-            var result = _TransactionAPIController.TransferMoney(model);
+            var result = await _TransactionAPIController.TransferMoney(model);
             if (result.IsSuccess)
                 this.ShowSuccessMessage(result.Message);
             else this.ShowErrorMessage(result.Message);
@@ -158,13 +159,13 @@ namespace BankWebAPI.Controllers
 
         [HttpPost]
         [ApiExplorerSettings(IgnoreApi = true)]
-        public IActionResult UpdateAccount(long accountId, string name, string idCardPassport)
+        public async Task<IActionResult> UpdateAccount(long accountId, string name, string idCardPassport)
         {
             var model = new CustomerAccountModel();
             model.Id = accountId;
             model.FullName = name;
             model.IdCardPassport = idCardPassport;
-            var result = _TransactionAPIController.CreateAccount(model);
+            var result = await _TransactionAPIController.CreateAccount(model);
             if (result.IsSuccess)
                 this.ShowSuccessMessage(result.Message);
             else this.ShowErrorMessage(result.Message);

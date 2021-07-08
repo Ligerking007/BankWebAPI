@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Text;
+using System.Threading.Tasks;
 using AutoMapper;
 using Core.Common;
 using Core.Interfaces;
@@ -17,7 +18,7 @@ using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
 using Repository.Interfaces.BankDB;
 using Repository.Models.BankDB;
-
+using Microsoft.EntityFrameworkCore;
 namespace Core.Services
 {
     public class CustomerAccountService : ICustomerAccountService
@@ -41,7 +42,7 @@ namespace Core.Services
 
         }
 
-        public BaseResponse CreateCustomerAccount(CustomerAccountModel req)
+        public async Task<BaseResponse> CreateCustomerAccount(CustomerAccountModel req)
         {
             BaseResponse res = new BaseResponse() { IsSuccess = false };
             try
@@ -56,17 +57,17 @@ namespace Core.Services
                     modelUpdate.ModifiedBy = req.CreatedBy ;
                     modelUpdate.ModifiedDate = DateTime.Now;
 
-                    _ICustomerAccountRepository.Update(modelUpdate, true);
+                    await _ICustomerAccountRepository.UpdateAsync(modelUpdate, true);
                 }
                 else
                 {
 
-                    req.AccountNo = GenerateAccountNo();
-                    req.IbanNo = GenerateIBANNo();
+                    req.AccountNo = await GenerateAccountNo();
+                    req.IbanNo = await GenerateIBANNo();
                     req.CreatedDate = DateTime.Now;
                     req.CreatedBy = req.CreatedBy ;
                     var modelDB = _IMapper.Map<CustomerAccount>(req);
-                    _ICustomerAccountRepository.Add(modelDB, true);
+                    await _ICustomerAccountRepository.AddAsync(modelDB, true);
                 }
 
                 res.IsSuccess = true;
@@ -81,12 +82,12 @@ namespace Core.Services
             return res;
         }
 
-        public CustomerAccountModel GetCustomerAccount(long id)
+        public async Task<CustomerAccountModel> GetCustomerAccount(long id)
         {
             CustomerAccountModel res = new CustomerAccountModel();
             try
             {
-                var queryDB = _ICustomerAccountRepository.AsQueryable().FirstOrDefault(f => f.Id == id);
+                var queryDB = await _ICustomerAccountRepository.AsQueryable().FirstOrDefaultAsync(f => f.Id == id);
                 res = _IMapper.Map<CustomerAccountModel>(queryDB);
 
             }
@@ -98,14 +99,14 @@ namespace Core.Services
             return res;
 
         }
-        public List<CustomerAccountModel> GetCustomerAccountList()
+        public async Task<List<CustomerAccountModel>> GetCustomerAccountList()
         {
             List<CustomerAccountModel> res = new List<CustomerAccountModel>();
             try
             {
-                var queryDB = _ICustomerAccountRepository.AsQueryable().OrderBy(x => x.CreatedDate);
+                var queryDB = await Task.Run(() => _ICustomerAccountRepository.AsQueryable().OrderBy(x => x.CreatedDate));
                 var queryMapping = _IMapper.Map<IEnumerable<CustomerAccountModel>>(queryDB);
-                res = queryMapping.ToList();
+                res =  queryMapping.ToList();
             }
             catch (Exception ex)
             {
@@ -114,7 +115,7 @@ namespace Core.Services
 
             return res;
         }
-        public CustomerAccountGridResult GetCustomerAccountList(Filter req)
+        public async Task<CustomerAccountGridResult> GetCustomerAccountList(Filter req)
         {
             List<CustomerAccountModel> res = new List<CustomerAccountModel>();
             CustomerAccountGridResult gridRes = new CustomerAccountGridResult();
@@ -181,27 +182,27 @@ namespace Core.Services
 
             return parameters;
         }
-        public BaseResponse DepositMoney(TransactionModel req)
+        public async Task<BaseResponse> DepositMoney(TransactionModel req)
         {
             BaseResponse res = new BaseResponse() { IsSuccess = false };
             try
             {
                 req.ActionType = "D";
-                var modelUpdate = _ICustomerAccountRepository.AsQueryable().FirstOrDefault(f => f.AccountNo == req.SourceNo);
+                var modelUpdate = await _ICustomerAccountRepository.AsQueryable().FirstOrDefaultAsync(f => f.AccountNo == req.SourceNo);
                 if (modelUpdate != null)
                 {
 
-                    req.FeePercent = GetFeePercent(req.ActionType, DateTime.Now);
-                    req.FeeAmount = CalculateFeeAmount(req.Amount, req.FeePercent);
-                    req.NetAmount = CalculateNetAmountDeposit(req.Amount, req.FeeAmount);
+                    req.FeePercent = await GetFeePercent(req.ActionType, DateTime.Now);
+                    req.FeeAmount = await CalculateFeeAmount(req.Amount, req.FeePercent);
+                    req.NetAmount = await CalculateNetAmountDeposit(req.Amount, req.FeeAmount);
 
-                    modelUpdate.Balance = CalculateBalanceDeposit(modelUpdate.Balance, req.NetAmount);
+                    modelUpdate.Balance = await CalculateBalanceDeposit(modelUpdate.Balance, req.NetAmount);
 
-                    _ICustomerAccountRepository.Update(modelUpdate, true);
+                    await _ICustomerAccountRepository.UpdateAsync(modelUpdate, true);
 
                     req.DestinationId = modelUpdate.Id;
 
-                    res = SaveTransaction(req);
+                    res = await SaveTransaction(req);
                 }
                 else
                 {
@@ -216,19 +217,19 @@ namespace Core.Services
             }
             return res;
         }
-        public BaseResponse WithdrawMoney(TransactionModel req)
+        public async Task<BaseResponse> WithdrawMoney(TransactionModel req)
         {
             BaseResponse res = new BaseResponse() { IsSuccess = false };
             try
             {
                 req.ActionType = "W";
-                var modelUpdate = _ICustomerAccountRepository.AsQueryable().FirstOrDefault(f => f.AccountNo == req.SourceNo);
+                var modelUpdate = await _ICustomerAccountRepository.AsQueryable().FirstOrDefaultAsync(f => f.AccountNo == req.SourceNo);
                 if (modelUpdate != null)
                 {
 
-                    req.FeePercent = GetFeePercent(req.ActionType, DateTime.Now);
-                    req.FeeAmount = CalculateFeeAmount(req.Amount, req.FeePercent);
-                    req.NetAmount = CalculateNetAmountWithdraw(req.Amount, req.FeeAmount);
+                    req.FeePercent = await GetFeePercent(req.ActionType, DateTime.Now);
+                    req.FeeAmount = await CalculateFeeAmount(req.Amount, req.FeePercent);
+                    req.NetAmount = await CalculateNetAmountWithdraw(req.Amount, req.FeeAmount);
 
                     if (modelUpdate.Balance < req.NetAmount)//Validation
                     {
@@ -236,11 +237,11 @@ namespace Core.Services
                         res.Message = "Not enough balance for withdrawal!";
                         return res;
                     }
-                    modelUpdate.Balance = CalculateBalanceWithdraw(modelUpdate.Balance, req.NetAmount);
+                    modelUpdate.Balance = await CalculateBalanceWithdraw(modelUpdate.Balance, req.NetAmount);
                     _ICustomerAccountRepository.Update(modelUpdate, true);
                     req.SourceId = modelUpdate.Id;
-                    res = SaveTransaction(req);
-                }
+                    res = await SaveTransaction(req);
+                } 
                 else
             {
                 res.Message = "Please input source account no!";
@@ -254,7 +255,7 @@ namespace Core.Services
             }
             return res;
         }
-        public BaseResponse TransferMoney(TransactionModel req)
+        public async Task<BaseResponse> TransferMoney(TransactionModel req)
         {
             BaseResponse res = new BaseResponse() { IsSuccess = false };
             try
@@ -268,9 +269,9 @@ namespace Core.Services
                 if (modelUpdate != null)
                 {
                     #region Source AccountNo
-                    req.FeePercent = GetFeePercent(req.ActionType, DateTime.Now);
-                    req.FeeAmount = CalculateFeeAmount(req.Amount, req.FeePercent);
-                    req.NetAmount = CalculateNetAmountWithdraw(req.Amount, req.FeeAmount);
+                    req.FeePercent = await GetFeePercent(req.ActionType, DateTime.Now);
+                    req.FeeAmount = await CalculateFeeAmount(req.Amount, req.FeePercent);
+                    req.NetAmount = await CalculateNetAmountWithdraw(req.Amount, req.FeeAmount);
 
                     if (modelUpdate.Balance < req.NetAmount)//Validation
                     {
@@ -278,7 +279,7 @@ namespace Core.Services
                         res.Message = "Not enough balance for transfer!";
                         return res;
                     }
-                    modelUpdate.Balance = CalculateBalanceWithdraw(modelUpdate.Balance, req.NetAmount);
+                    modelUpdate.Balance = await CalculateBalanceWithdraw(modelUpdate.Balance, req.NetAmount);
                     _ICustomerAccountRepository.Update(modelUpdate, true);
                     req.SourceId = modelUpdate.Id;
                     #endregion
@@ -286,12 +287,12 @@ namespace Core.Services
                     var modelDestination = _ICustomerAccountRepository.AsQueryable().FirstOrDefault(f => f.AccountNo == req.DestinationNo);
                     if (modelDestination != null)
                     {
-                        modelDestination.Balance = CalculateBalanceDeposit(modelDestination.Balance, req.Amount);//Destination - No Fee
+                        modelDestination.Balance = await CalculateBalanceDeposit(modelDestination.Balance, req.Amount);//Destination - No Fee
                         _ICustomerAccountRepository.Update(modelDestination, true);
                         req.DestinationId = modelDestination.Id;
                     }
                     #endregion
-                    res = SaveTransaction(req);
+                    res = await SaveTransaction(req);
                 }
                 else
             {
@@ -306,16 +307,16 @@ namespace Core.Services
             }
             return res;
         }
-        private BaseResponse SaveTransaction(TransactionModel req)
+        private async Task<BaseResponse> SaveTransaction(TransactionModel req)
         {
             BaseResponse res = new BaseResponse() { IsSuccess = false };
             try
             {
                 req.ActionDate = DateTime.Now;
                 req.ActionBy = req.ActionBy;
-                req.ReferenceNo = GenerateReferenceNo();
+                req.ReferenceNo = await GenerateReferenceNo();
                 var modelDB = _IMapper.Map<Transaction>(req);
-                _ITransactionRepository.Add(modelDB, true);
+                await _ITransactionRepository.AddAsync(modelDB, true);
 
                 res.IsSuccess = true;
                 res.Message = "Completed";
@@ -329,12 +330,12 @@ namespace Core.Services
             }
             return res;
         }
-        public List<TransactionModel> GetTransactionList(long id)
+        public async Task<List<TransactionModel>> GetTransactionList(long id)
         {
             List<TransactionModel> res = new List<TransactionModel>();
             try
             {
-                var data = _ITransactionRepository.AsQueryable()
+                var data = await _ITransactionRepository.AsQueryable()
                     .Where(x => x.SourceId == id || x.DestinationId==id)
                     //.Skip((pageIndex - 1) * itemsPerPage).Take(itemsPerPage)
                     .Select(x=>new TransactionModel()
@@ -352,7 +353,7 @@ namespace Core.Services
                         ReferenceNo = x.ReferenceNo,
 
 
-                    }).OrderByDescending(x => x.ActionDate).ToList();
+                    }).OrderByDescending(x => x.ActionDate).ToListAsync();
 
                 res = data;
             }
@@ -363,7 +364,7 @@ namespace Core.Services
 
             return res;
         }
-        public TransactionGridResult GetTransactionList(Filter req)
+        public async Task<TransactionGridResult> GetTransactionList(Filter req)
         {
             TransactionGridResult gridRes = new TransactionGridResult();
 
@@ -398,7 +399,7 @@ namespace Core.Services
                         query = query.OrderBy(req.GridColumns[sort.column].name, sort.dir);
                 }
                 //Paging
-                var data = query.Skip(req.GridStart).Take(req.GridLength).ToList();
+                var data = await query.Skip(req.GridStart).Take(req.GridLength).ToListAsync();
                 if (data != null)
                 {
                     res = data;
@@ -416,12 +417,12 @@ namespace Core.Services
 
             return gridRes;
         }
-        public int GetTransactionListCount(long id)
+        public async Task<int> GetTransactionListCount(long id)
         {
             try
             {
-                var count = _ITransactionRepository.AsQueryable()
-                    .Where(x => x.SourceId == id || x.DestinationId == id).Count();
+                var count = await _ITransactionRepository.AsQueryable()
+                    .Where(x => x.SourceId == id || x.DestinationId == id).CountAsync();
 
                 return count;
             }
@@ -432,13 +433,13 @@ namespace Core.Services
 
             return 0;
         }
-        public string GenerateAccountNo()
+        public async Task<string> GenerateAccountNo()
         {
-            var count = _ICustomerAccountRepository.AsQueryable().Count() + 1;
+            var count = await _ICustomerAccountRepository.AsQueryable().CountAsync() + 1;
             var newStr = count.ToString().PadLeft(20, '0');
             return newStr;
         }
-        public string GenerateIBANNo()
+        public async Task<string> GenerateIBANNo()
         {
             try
             {
@@ -447,7 +448,7 @@ namespace Core.Services
                 chromeOptions.AddArguments("headless");
                 var driver = new ChromeDriver(chromeOptions);//Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
                 driver.Url = "http://randomiban.com/?country=Netherlands";
-                var result = driver.FindElementById("demo").Text;
+                var result = await Task.Run(() => driver.FindElementById("demo").Text);
                 return result;
                 //string html = driver.PageSource;
 
@@ -473,16 +474,16 @@ namespace Core.Services
             }
             return "";
         }
-        public decimal GetFeePercent(string feeType, DateTime currentDate)
+        public async Task<decimal> GetFeePercent(string feeType, DateTime currentDate)
         {
-            var feePercent = _IMasterFeeRepository.AsQueryable().OrderByDescending(x => x.EffectiveDate)
-                .FirstOrDefault(f => f.EffectiveDate <= currentDate.Date && f.FeeType == feeType).FeePercent;
-
-            return feePercent;
+            var feePercent = await _IMasterFeeRepository.AsQueryable().OrderByDescending(x => x.EffectiveDate)
+                .FirstOrDefaultAsync(f => f.EffectiveDate <= currentDate.Date && f.FeeType == feeType);
+           
+            return feePercent.FeePercent;
         }
-        public string GenerateReferenceNo()
+        public async Task<string> GenerateReferenceNo()
         {
-            var count = _ITransactionRepository.AsQueryable().Count() + 1;
+            var count = await _ITransactionRepository.AsQueryable().CountAsync() + 1;
             var newStr = count.ToString().PadLeft(30, '0');
 
             //var random = new Random();
@@ -497,25 +498,25 @@ namespace Core.Services
 
             return newStr;
         }
-        public decimal CalculateFeeAmount(decimal amount, decimal feePercent)
+        public async Task<decimal> CalculateFeeAmount(decimal amount, decimal feePercent)
         {
-            return Math.Round(((amount * feePercent) / 100), 2);
+            return await Task.Run (()=> Math.Round(((amount * feePercent) / 100), 2));
         }
-        public decimal CalculateNetAmountDeposit(decimal amount, decimal feeAmount)
+        public async Task<decimal> CalculateNetAmountDeposit(decimal amount, decimal feeAmount)
         {
-            return Math.Round(amount - feeAmount, 2);
+            return await Task.Run(() => Math.Round(amount - feeAmount, 2));
         }
-        public decimal CalculateNetAmountWithdraw(decimal amount, decimal feeAmount)
+        public async Task<decimal> CalculateNetAmountWithdraw(decimal amount, decimal feeAmount)
         {
-            return Math.Round(amount + feeAmount, 2);
+            return await Task.Run(() => Math.Round(amount + feeAmount, 2));
         }
-        public decimal CalculateBalanceDeposit(decimal balance, decimal netAmount)
+        public async Task<decimal> CalculateBalanceDeposit(decimal balance, decimal netAmount)
         {
-            return Math.Round(balance + netAmount, 2);
+            return await Task.Run(() => Math.Round(balance + netAmount, 2));
         }
-        public decimal CalculateBalanceWithdraw(decimal balance, decimal netAmount)
+        public async Task<decimal> CalculateBalanceWithdraw(decimal balance, decimal netAmount)
         {
-            return Math.Round(balance - netAmount, 2);
+            return await Task.Run(() => Math.Round(balance - netAmount, 2));
         }
 
     }

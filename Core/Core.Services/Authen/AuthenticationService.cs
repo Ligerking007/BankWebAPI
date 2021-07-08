@@ -14,9 +14,9 @@ namespace Core.Services
         }
         public async Task<LoginModel> GetAuthenticationAsync(UserAuthenModel vm)
         {
-            await Task.Run(InnerMethod);
+            return await Task.Run(() =>
 
-            return new LoginModel()
+            new LoginModel()
             {
 
                 UserID = vm.Username,
@@ -24,12 +24,10 @@ namespace Core.Services
                 ResultCode = LoginResultType.Success,
                 ResutlMessage = "Login success",
                 IsSuccess = true,
-            };
+            }
+            ); ; ;
         }
 
-        void InnerMethod()
-        {
-            
-        }
+       
     }
 }
