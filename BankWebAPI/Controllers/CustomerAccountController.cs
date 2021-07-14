@@ -83,7 +83,8 @@ namespace BankWebAPI.Controllers
         {
             var model = new TransferViewModel
             {
-                CustomerAccounts = await _TransactionAPIController.GetCustomerAccountList()
+                CustomerAccounts = await _TransactionAPIController.GetCustomerAccountList(),
+                FeePercent = await _TransactionAPIController.GetFeePercent("D"),
             };
 
             return View(model);
@@ -110,7 +111,8 @@ namespace BankWebAPI.Controllers
         {
             var model = new TransferViewModel
             {
-                CustomerAccounts = await _TransactionAPIController.GetCustomerAccountList()
+                CustomerAccounts = await _TransactionAPIController.GetCustomerAccountList(),
+                FeePercent = await _TransactionAPIController.GetFeePercent("W"),
             };
 
             return View(model);
@@ -135,7 +137,8 @@ namespace BankWebAPI.Controllers
         {
             var model = new TransferViewModel
             {
-                CustomerAccounts = await _TransactionAPIController.GetCustomerAccountList()
+                CustomerAccounts = await _TransactionAPIController.GetCustomerAccountList(),
+                FeePercent = await _TransactionAPIController.GetFeePercent("T"),
             };
 
             return this.View(model);

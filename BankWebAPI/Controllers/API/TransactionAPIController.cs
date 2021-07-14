@@ -128,6 +128,19 @@ namespace BankWebAPI.Controllers
             var result = await _ICustomerAccountService.GenerateIBANNo();
             return result;
         }
+
+
+        /// <summary>
+        /// Get iban no
+        /// </summary>
+        [HttpPost]
+        public async Task<decimal> GetFeePercent(string feeType)
+        {
+            var result = await _ICustomerAccountService.GetFeePercent(feeType, System.DateTime.Now);
+            return result;
+        }
+
+        
         #endregion
         /// <summary>
         /// Test Api 

@@ -1,9 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Net;
-using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -11,11 +8,9 @@ using Core.Common;
 using Core.Interfaces;
 using Core.Models;
 using Core.Models.Bank;
-using HtmlAgilityPack;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
 using OpenQA.Selenium.Chrome;
-using OpenQA.Selenium.Support.UI;
 using Repository.Interfaces.BankDB;
 using Repository.Models.BankDB;
 using Microsoft.EntityFrameworkCore;
@@ -451,22 +446,6 @@ namespace Core.Services
                 var result = await Task.Run(() => driver.FindElementById("demo").Text);
                 return result;
                 //string html = driver.PageSource;
-
-                //HtmlDocument doc = new HtmlDocument();
-
-                //doc.LoadHtml(html);
-                ////HtmlWeb web = new HtmlWeb();
-                ////var doc = web.Load("http://randomiban.com/?country=Netherlands");
-
-                ////get data in p Tag : <p id="demo" class="ibandisplay">NL28RABO3154172025</p>
-                //var nodes = doc.DocumentNode.SelectNodes("//p")
-                //    .Where(d => d.Attributes.Contains("id"))
-                //    .Where(d => d.Attributes["id"].Value == "demo");
-
-                //foreach (HtmlNode node in nodes)
-                //{
-                //    return node.InnerText;
-                //}
             }
             catch(Exception ex)
             {

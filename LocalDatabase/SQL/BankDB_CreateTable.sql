@@ -148,8 +148,8 @@ GO
 INSERT INTO [dbo].[User]([UserId], [UserName], [PasswordHash], [FullName], [CreatedDate], [CreatedBy], [ModifiedDate], [ModifiedBy]) VALUES (N'System', N'System', N'System', N'System', getDate(), N'System', NULL, NULL);
 
 INSERT INTO [dbo].[MasterFee]([EffectiveDate], [FeeType], [FeePercent], [CreatedBy], [CreatedTime], [ModifiedBy], [ModifiedTime]) VALUES ('2021-06-01', N'D', .10, N'System', getDate(), NULL, NULL);
-INSERT INTO [dbo].[MasterFee]([EffectiveDate], [FeeType], [FeePercent], [CreatedBy], [CreatedTime], [ModifiedBy], [ModifiedTime]) VALUES ('2021-06-01', N'W', 0, N'System', getDate(), NULL, NULL);
-INSERT INTO [dbo].[MasterFee]([EffectiveDate], [FeeType], [FeePercent], [CreatedBy], [CreatedTime], [ModifiedBy], [ModifiedTime]) VALUES ('2021-06-01', N'T', 0, N'System', getDate(), NULL, NULL);
+INSERT INTO [dbo].[MasterFee]([EffectiveDate], [FeeType], [FeePercent], [CreatedBy], [CreatedTime], [ModifiedBy], [ModifiedTime]) VALUES ('2021-06-01', N'W', .03, N'System', getDate(), NULL, NULL);
+INSERT INTO [dbo].[MasterFee]([EffectiveDate], [FeeType], [FeePercent], [CreatedBy], [CreatedTime], [ModifiedBy], [ModifiedTime]) VALUES ('2021-06-01', N'T', .05, N'System', getDate(), NULL, NULL);
 
 
 

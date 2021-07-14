@@ -1,0 +1,47 @@
+﻿@model BankWebAPI.Models.CustomerAccount.TransferViewModel
+
+        <div class="form-group">
+            <label asp-for="Amount"></label>
+            <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                    <div class="input-group-text">฿</div>
+                </div>
+                <input type="number" min="0.01" step="0.01" class="form-control" asp-for="Amount" />
+            </div>
+            <span asp-validation-for="Amount" class="text-danger"></span>
+        </div>
+@if (Model.FeePercent > 0)
+{
+    <div class="form-group">
+        <label asp-for="FeePercent"></label>
+        <div class="input-group mb-2">
+            <div class="input-group-prepend">
+                <div class="input-group-text">฿</div>
+            </div>
+            <input disabled type="number" min="0.01" step="0.01" class="form-control" asp-for="FeePercent" />
+        </div>
+
+    </div>
+    <div class="form-group">
+        <label asp-for="FeeAmount"></label>
+        <div class="input-group mb-2">
+            <div class="input-group-prepend">
+                <div class="input-group-text">฿</div>
+            </div>
+            <input disabled type="number" min="0.01" step="0.01" class="form-control" asp-for="FeeAmount" />
+        </div>
+
+    </div>
+    <div class="form-group">
+        <label asp-for="NetAmount"></label>
+        <div class="input-group mb-2">
+            <div class="input-group-prepend">
+                <div class="input-group-text">฿</div>
+            </div>
+            <input disabled type="number" min="0.01" step="0.01" class="form-control" asp-for="NetAmount" />
+        </div>
+        <span asp-validation-for="NetAmount" class="text-danger"></span>
+    </div>
+
+}
+

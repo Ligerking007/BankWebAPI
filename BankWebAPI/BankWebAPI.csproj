@@ -10,12 +10,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="Views\CustomerAccount\_AmountPartial.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="Views\CustomerAccount\Create.cshtml" />
     <None Include="Views\CustomerAccount\Withdraw.cshtml" />
     <None Include="Views\CustomerAccount\Details.cshtml" />
     <None Include="Views\CustomerAccount\Index.cshtml" />
     <None Include="Views\CustomerAccount\Deposit.cshtml" />
     <None Include="Views\CustomerAccount\Transfer.cshtml" />
+    <None Include="Views\CustomerAccount\_AmountPartial.cshtml" />
     <None Include="Views\CustomerAccount\_TransactionPartial.cshtml" />
     <None Include="Views\Errors\Error.cshtml" />
     <None Include="Views\Errors\Error403.cshtml" />
